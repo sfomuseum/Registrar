@@ -292,6 +292,8 @@
 				DEVELOPMENT_TEAM = JB8GZN32RY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Registrar/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow the application to take pictures";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow the application to know where you are";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -324,6 +326,8 @@
 				DEVELOPMENT_TEAM = JB8GZN32RY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Registrar/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow the application to take pictures";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow the application to know where you are";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
