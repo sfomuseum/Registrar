@@ -80,8 +80,16 @@ class ViewController: UIViewController {
         self.progressView.isHidden = false
         self.progressView.startAnimating()
         
+        var label = WallLabel(text)
+        label.timestamp = Int(NSDate().timeIntervalSince1970)
+        label.latitude = self.current_location?.coordinate.latitude ?? 0.0
+        label.longitude = self.current_location?.coordinate.longitude ?? 0.0
+        
         Task {
             do {
+                
+                // Start of make this a WallLabel method
+                // There are "immutable self" errors to work out...
                 
                 let session = LanguageModelSession(instructions: instructions)
                 
@@ -89,16 +97,19 @@ class ViewController: UIViewController {
                     to: text,
                     generating: WallLabel.self
                 )
-                
-                var label = response.content
-                label.input = text
-                label.timestamp = Int(NSDate().timeIntervalSince1970)
-                label.latitude = self.current_location?.coordinate.latitude ?? 0.0
-                label.longitude = self.current_location?.coordinate.longitude ?? 0.0
+                                      
+                label.title = response.content.title
+                label.date = response.content.date
+                label.creator = response.content.creator
+                label.location = response.content.location
+                label.accession_number = response.content.accession_number
+                label.medium = response.content.medium
+                label.creditline = response.content.creditline
+                                
+                // End of make this a WallLabel method
                 
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = .prettyPrinted
-                
                 let enc = try encoder.encode(label)
                 
                 DispatchQueue.main.async {
@@ -177,8 +188,7 @@ extension ViewController: UIContextMenuInteractionDelegate {
         }
         
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-            
-            
+                        
             let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash")) { action in
                 self.images.remove(at: row)
                 self.collectionView.deleteItems(at: [indexPath])
