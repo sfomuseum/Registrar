@@ -44,17 +44,14 @@ class ViewController: UIViewController {
             imagePicker.allowsEditing = false
             present(imagePicker, animated: true)
         } else {
-            // If the camera is not available, show an alert
-            let alert = UIAlertController(title: "Camera Not Available", message: "This device has no camera.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
+            self.showAlert(title: "Camera Not Available", message: "This device has no camera.")
         }
     }
     
     @IBAction func scanButton(_ sender: UIButton){
         
         guard isDataScannerAvailable else {
-            return showUnavailableAlert()
+            return showAlert(title: "DataScanner is not available", message: "Unable to scan data because DataScanner functionality is not available.")
         }
         
         self.configureDataScanner()
@@ -118,16 +115,16 @@ class ViewController: UIViewController {
                     self.progressView.isHidden = true
                 }
                 
-                showUnavailableAlert()
+                self.showAlert(title: "Failed to parse text", message: "Failed to parse text \(error)")
             }
             
         }
     }
     
-    func showUnavailableAlert() {
+    func showAlert(title: String, message: String) {
         let alert = UIAlertController(
-            title: "Your device is not compatible!",
-            message: "To use, open app on a devices with iOS 16 or above and accept the terms.",
+            title: title,
+            message: message,
             preferredStyle: UIAlertController.Style.alert
         )
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
@@ -137,6 +134,13 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource {
     
+
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        print("BUELLER")
+        return CGSize(width: 300.0, height: 300.0)
+    }
+
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
@@ -145,6 +149,9 @@ extension ViewController: UICollectionViewDataSource {
                 
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
     
+            cell.layer.borderColor = UIColor.black.cgColor
+            cell.layer.borderWidth = 2
+        
             if let imageView = cell.viewWithTag(100) as? UIImageView {
                 imageView.image = images[indexPath.row]
             }
