@@ -43,10 +43,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             indexPathsToDelete.append(indexPath)
         }
         
-        // Clear your data source array
         keyValuePairs.removeAll()
-        
-        // Delete the rows from table view with animation
         tableView.deleteRows(at: indexPathsToDelete, with: .automatic)
     }
     
@@ -71,14 +68,15 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         cell.keyLabel.text = key
         cell.valueLabel.text = value
 
-        if isKeyEditable(key: key) {
-            setupEditableTextField(cell: cell)
-        } else {
+        cell.valueLabel.numberOfLines = 0
+        cell.valueLabel.lineBreakMode = .byWordWrapping
             
-            cell.valueLabel.numberOfLines = 0
-            cell.valueLabel.lineBreakMode = .byWordWrapping
-        }
-            
+        let interaction = TableValueMenuInteraction(delegate: self)
+        interaction.indexPath = indexPath
+        interaction.row = indexPath.row
+        
+        cell.addInteraction(interaction)
+        
         return cell
     }
     
