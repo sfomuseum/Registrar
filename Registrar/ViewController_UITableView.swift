@@ -2,6 +2,46 @@ import UIKit
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return keyValuePairs.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "KeyValueCell", for: indexPath) as? KeyValueTableViewCell else {
+            return UITableViewCell()
+        }
+        
+        let (key, value) = keyValuePairs[indexPath.row]
+        
+        cell.keyLabel.text = key
+        cell.valueLabel.text = value
+        
+        cell.valueLabel.numberOfLines = 0
+        cell.valueLabel.lineBreakMode = .byWordWrapping
+        
+        if isKeyEditable(key: key) {
+            let interaction = TableValueMenuInteraction(delegate: self)
+            interaction.indexPath = indexPath
+            interaction.row = indexPath.row
+            cell.addInteraction(interaction)
+        }
+        
+        /*
+        if indexPath.row+1 == keyValuePairs.count{
+            print("DONE")
+            let ex = self.exportTable()
+            print("EX \(ex)")
+        }
+        */
+        
+        return cell
+    }
+    
     func updateTableData(label: WallLabel) {
         
         clearTable()
@@ -33,7 +73,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.reloadData()
     }
     
-
     func clearTable() {
         let numberOfRows = keyValuePairs.count
         var indexPathsToDelete = [IndexPath]()
@@ -47,45 +86,26 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         tableView.deleteRows(at: indexPathsToDelete, with: .automatic)
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return keyValuePairs.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func exportTable() -> [String: String] {
+        var result = [String: String]()
         
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "KeyValueCell", for: indexPath) as? KeyValueTableViewCell else {
-            return UITableViewCell()
+        for indexPath in 0..<tableView.numberOfRows(inSection: 0) {
+            guard let cell = tableView.cellForRow(at: IndexPath(row: indexPath, section: 0)) as? KeyValueTableViewCell else {
+                continue
+            }
+            
+            if let key = cell.keyLabel.text, let value = cell.valueLabel.text {
+                result[key] = value
+            }
         }
         
-        let (key, value) = keyValuePairs[indexPath.row]
-        
-        cell.keyLabel.text = key
-        
-        cell.keyLabel.text = key
-        cell.valueLabel.text = value
-
-        cell.valueLabel.numberOfLines = 0
-        cell.valueLabel.lineBreakMode = .byWordWrapping
-            
-        let interaction = TableValueMenuInteraction(delegate: self)
-        interaction.indexPath = indexPath
-        interaction.row = indexPath.row
-        
-        cell.addInteraction(interaction)
-        
-        return cell
+        return result
     }
     
     func isKeyEditable(key: String) -> Bool {
         
-        return false
-        
         switch (key) {
-        case "title", "date", "creator", "medium", "location", "creditline":
+        case "title", "date", "creator", "medium", "location", "creditline", "accession_number":
             return true
         default:
             return false
@@ -103,59 +123,5 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         }
         
         return dictionary
-    }
-    
-    func setupEditableTextField(cell: KeyValueTableViewCell) {
-        let textField = UITextField()
-        textField.text = cell.valueLabel.text
-
-        // Apply other desired settings for your text field (e.g., font, placeholder)
-        textField.font = UIFont.boldSystemFont(ofSize: 16)
-
-        // Configure the constraints to replace valueLabel with textField
-        cell.contentView.addSubview(textField)
-        textField.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            textField.trailingAnchor.constraint(equalTo: cell.contentView.trailingAnchor, constant: -16),
-            textField.centerYAnchor.constraint(equalTo: cell.keyLabel.centerYAnchor),
-
-            // Set width constraint for text field to allow wrapping
-            textField.widthAnchor.constraint(lessThanOrEqualToConstant: cell.contentView.bounds.width - 32)
-        ])
-
-        cell.valueLabel.isHidden = true
-
-        // Add target to handle text changes
-        textField.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
-
-        cell.editableTextField = textField
-    }
-
-    @objc func textFieldDidChange(_ textField: UITextField) {
-        guard let cell = getCellForTextField(textField),
-              let indexPath = tableView.indexPath(for: cell) else { return }
-
-        // Update the keyValuePairs array with the new value from the text field
-        var mutableKeyValuePairs = keyValuePairs
-        mutableKeyValuePairs[indexPath.row].1 = textField.text ?? ""
-        keyValuePairs = mutableKeyValuePairs
-
-        // Optionally, update your data source or perform any other action needed
-    }
-
-    func getCellForTextField(_ textField: UITextField) -> KeyValueTableViewCell? {
-        if let superview = textField.superview?.superview as? UITableViewCell,
-           let cell = superview as? KeyValueTableViewCell {
-            return cell
-        }
-        return nil
-    }
-    
-}
-
-extension Collection {
-    subscript(safe index: Index) -> Element? {
-        return indices.contains(index) ? self[index] : nil
     }
 }

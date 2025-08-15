@@ -58,6 +58,16 @@ struct WallLabel: Codable {
         return keys
     }
     
+    public func isKeyEditable(key: String) -> Bool {
+        
+        switch (key) {
+        case "title", "date", "creator", "medium", "location", "creditline":
+            return true
+        default:
+            return false
+        }
+    }
+    
     public func marshalJSON() -> Result<Data, Error> {
         
         let encoder = JSONEncoder()
