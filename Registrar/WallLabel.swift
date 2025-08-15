@@ -40,6 +40,7 @@ struct WallLabel: Codable {
         input = raw
     }
  
+    
     public func displayKeys() -> [String] {
         
         let keys: [String] = [
@@ -58,6 +59,35 @@ struct WallLabel: Codable {
         return keys
     }
     
+    public mutating func setProperty(key: String, value: Any) -> Bool {
+        
+        switch (key){
+        case "title", "date", "creator", "medium", "location", "creditline", "accession_number":
+            
+            switch(key) {
+            case "title":
+                self.title = "\(value)"
+            case "date":
+                self.date = "\(value)"
+            case "creator":
+                self.creator = "\(value)"
+            case "medium":
+                self.medium = "\(value)"
+            case "location":
+                self.location = "\(value)"
+            case "creditline":
+                self.creditline = "\(value)"
+            case "accession_number":
+                self.accession_number = "\(value)"
+            default:
+                ()
+            }
+            
+            return true
+        default:
+            return false
+        }
+    }
     public func isKeyEditable(key: String) -> Bool {
         
         switch (key) {

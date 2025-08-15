@@ -11,6 +11,8 @@ class ViewController: UIViewController {
         Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, Lfollowed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
     
+    var label = WallLabel("")
+    
     var images = [UIImage]()
     let cellReuseIdentifier = "cell"
     
@@ -88,7 +90,7 @@ class ViewController: UIViewController {
         self.progressView.isHidden = false
         self.progressView.startAnimating()
         
-        var label = WallLabel(text)
+        label = WallLabel(text)
         label.timestamp = Int(NSDate().timeIntervalSince1970)
         label.latitude = self.current_location?.coordinate.latitude ?? 0.0
         label.longitude = self.current_location?.coordinate.longitude ?? 0.0
@@ -127,7 +129,7 @@ class ViewController: UIViewController {
                     self.progressView.stopAnimating()
                     self.progressView.isHidden = true
                     
-                    self.updateTableData(label: label)
+                    self.updateTableData(label: self.label)
                     
                     // self.textView.text = String(data: enc, encoding: .utf8)
                 }

@@ -104,6 +104,8 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
     func isKeyEditable(key: String) -> Bool {
         
+        // To do: Read from label...
+        
         switch (key) {
         case "title", "date", "creator", "medium", "location", "creditline", "accession_number":
             return true

@@ -70,12 +70,17 @@ extension ViewController: UIContextMenuInteractionDelegate {
 
                 let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
                     if let newValue = alertController.textFields?.first?.text {
-                        // self?.valueLabel.text = newValue
 
-                        print("NEW VALUE \(newValue)")
+                        guard let this = self else {
+                            return
+                        }
+                            
+                        if !this.label.setProperty(key: key, value: newValue){
+                            this.showAlert(title: "Unable to update \(key)", message: "There was a problem updating the value of \(key)")
+                            return
+                        }
                         
-                        // You can also notify the view controller about this change if needed
-                        NotificationCenter.default.post(name: NSNotification.Name("ValueUpdated"), object: ["indexPath": nil, "newValue": newValue])
+                        this.updateTableData(label: this.label)
                     }
                 }
 
