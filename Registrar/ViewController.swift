@@ -5,12 +5,12 @@ import CoreLocation
 import FoundationModels
 
 class ViewController: UIViewController {
-
+    
     let instructions = """
         Parse this text as though it were a wall label in a museum describing an object.
         Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, Lfollowed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
-        
+    
     var images = [UIImage]()
     let cellReuseIdentifier = "cell"
     
@@ -30,7 +30,7 @@ class ViewController: UIViewController {
     @IBOutlet var saveButton: UIBarButtonItem!
     
     @IBOutlet var textView: UITextView!
-        
+    
     @IBOutlet weak var collectionView: UICollectionView!
     
     @IBOutlet weak var progressView: UIActivityIndicatorView!
@@ -59,7 +59,7 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         textView.isEditable = false
         
         locationManager.requestAlwaysAuthorization()
@@ -72,7 +72,7 @@ class ViewController: UIViewController {
         self.progressView.isHidden = true
         
     }
-
+    
     func processScannedText(text: String) {
         
         textView.text = text
@@ -133,32 +133,60 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: UICollectionViewDataSource {
-    
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        print("BUELLER")
-        return CGSize(width: 300.0, height: 300.0)
-    }
-
-    
+        
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return images.count
     }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-                
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
     
-            cell.layer.borderColor = UIColor.black.cgColor
-            cell.layer.borderWidth = 2
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-            if let imageView = cell.viewWithTag(100) as? UIImageView {
-                imageView.image = images[indexPath.row]
-            }
-
-            return cell
-
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
+        
+        cell.layer.borderColor = UIColor.black.cgColor
+        cell.layer.borderWidth = 2
+        
+        if let imageView = cell.viewWithTag(100) as? UIImageView {
+            imageView.image = images[indexPath.row]
+            
+            let interaction = ImageMenuInteraction(delegate: self)
+            interaction.indexPath = indexPath
+            interaction.row = indexPath.row
+            
+            cell.addInteraction(interaction)
         }
+        
+        return cell
+        
+    }
+}
+
+extension ViewController: UIContextMenuInteractionDelegate {
+    
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        
+        guard let im_interaction = interaction as? ImageMenuInteraction else {
+            return nil
+        }
+        
+        guard let indexPath = im_interaction.indexPath else {
+            return nil
+        }
+        
+        guard let row = im_interaction.row else {
+            return nil
+        }
+        
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
+            
+            
+            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash")) { action in
+                self.images.remove(at: row)
+                self.collectionView.deleteItems(at: [indexPath])
+            }
+            
+            return UIMenu(title: "", children: [deleteAction])
+        }
+    }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -171,7 +199,7 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
         }
         picker.dismiss(animated: true)
     }
-
+    
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
     }
@@ -204,7 +232,7 @@ extension ViewController: DataScannerViewControllerDelegate {
     func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
         switch item {
         case .text(let text):
-
+            
             self.processScannedText(text: text.transcript)
             
         case .barcode(let barcode):
