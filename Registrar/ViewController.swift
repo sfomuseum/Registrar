@@ -13,7 +13,7 @@ import FoundationModels
 
 @Generable(description: "Metadata properties for a wall label depicting a museum object")
 struct WallLabel: Codable {
-    @Guide(description: "The title or name of the object")
+    @Guide(description: "The title or name of the object. Sometimes titles may have leading numbers, followed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.")
     var title: String
 
     @Guide(description: "The year that an object was created")
@@ -33,6 +33,18 @@ struct WallLabel: Codable {
     
     @Guide(description: "The unique identifier for an object.")
     var accession_number: String
+    
+    @Guide(description: "Ignore this property")
+    var timestamp: Int
+    
+    @Guide(description: "Ignore this property")
+    var latitude: Float64
+    
+    @Guide(description: "Ignore this property")
+    var longitude: Float64
+    
+    @Guide(description: "Ignore this property")
+    var input: String
 }
 
 
@@ -40,7 +52,7 @@ class ViewController: UIViewController {
 
     let instructions = """
         Parse this text as though it were a wall label in a museum describing an object.
-        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present.
+        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, Lfollowed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
         
     var images = [UIImage]()
@@ -124,11 +136,21 @@ class ViewController: UIViewController {
                     generating: WallLabel.self
                 )
                
+                var label = response.content
+                label.input = text
+                label.timestamp = Int(NSDate().timeIntervalSince1970)
+                label.latitude = self.current_location?.coordinate.latitude ?? 0.0
+                label.longitude = self.current_location?.coordinate.longitude ?? 0.0
+                
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = .prettyPrinted
                 
-                let enc = try encoder.encode(response.content)
-                print(String(data: enc, encoding: .utf8) )
+                let enc = try encoder.encode(label)
+                // print(String(data: enc, encoding: .utf8) )
+                
+                DispatchQueue.main.async {
+                    self.textView.text = String(data: enc, encoding: .utf8)
+                }
                 
             } catch {
                 print("SAD \(error)")
