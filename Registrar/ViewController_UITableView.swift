@@ -6,26 +6,13 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         clearTable()
         
-
+        // START OF put me in a function... maybe?
+        
         let dict = propertiesToDictionary(instance: label)
         
         var newKeyValuePairs: [(String, String)] = []
         
-        let keys: [String] = [
-            "title",
-            "date",
-            "creator",
-            "location",
-            "medium",
-            "creditline",
-            "accession_number",
-            "latitude",
-            "longitude",
-            "timestamp",
-            "input",
-        ]
-        
-        for key in keys {
+        for key in label.displayKeys() {
             
             if !dict.keys.contains(key){
                 continue
@@ -40,10 +27,13 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             }
         }
         
+        // END OF put me in a function
+        
         keyValuePairs = newKeyValuePairs
         tableView.reloadData()
     }
     
+
     func clearTable() {
         let numberOfRows = keyValuePairs.count
         var indexPathsToDelete = [IndexPath]()

@@ -1,4 +1,5 @@
 import FoundationModels
+import Foundation
 
 @Generable(description: "Metadata properties for a wall label depicting a museum object")
 struct WallLabel: Codable {
@@ -38,5 +39,35 @@ struct WallLabel: Codable {
     init(_ raw: String) {
         input = raw
     }
+ 
+    public func displayKeys() -> [String] {
+        
+        let keys: [String] = [
+            "title",
+            "date",
+            "creator",
+            "location",
+            "medium",
+            "creditline",
+            "accession_number",
+            "latitude",
+            "longitude",
+            "timestamp",
+            "input",
+        ]
+        return keys
+    }
     
+    public func marshalJSON() -> Result<Data, Error> {
+        
+        let encoder = JSONEncoder()
+        // encoder.outputFormatting = .prettyPrinted
+        
+        do {
+            let enc = try encoder.encode(self)
+            return .success(enc)
+        } catch {
+            return .failure(error)
+        }
+    }
 }

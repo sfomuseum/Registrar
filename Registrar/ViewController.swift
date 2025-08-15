@@ -116,9 +116,11 @@ class ViewController: UIViewController {
                 
                 // End of make this a WallLabel method
                 
+                /*
                 let encoder = JSONEncoder()
                 encoder.outputFormatting = .prettyPrinted
                 let enc = try encoder.encode(label)
+                */
                 
                 DispatchQueue.main.async {
                     
