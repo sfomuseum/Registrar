@@ -9,10 +9,40 @@ import UIKit
 import Vision
 import VisionKit
 import CoreLocation
+import FoundationModels
+
+@Generable(description: "Metadata properties for a wall label depicting a museum object")
+struct WallLabel: Codable {
+    @Guide(description: "The title or name of the object")
+    var title: String
+
+    @Guide(description: "The year that an object was created")
+    var date: Int
+
+    @Guide(description: "The individual or organization responsible for creating an object.")
+    var creator: String
+    
+    @Guide(description: "The name of an individual, persons or organization who donated or are lending an object.")
+    var creditline: String
+    
+    @Guide(description: "The location that an object was produced in.")
+    var location: String
+    
+    @Guide(description: "The medium or media used to create the object.")
+    var medium: String
+    
+    @Guide(description: "The unique identifier for an object.")
+    var accession_number: String
+}
+
 
 class ViewController: UIViewController {
 
-    
+    let instructions = """
+        Parse this text as though it were a wall label in a museum describing an object.
+        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present.
+        """
+        
     var images = [UIImage]()
     let cellReuseIdentifier = "cell"
     
@@ -78,7 +108,33 @@ class ViewController: UIViewController {
         self.collectionView.dataSource = self
     }
 
-
+    func processScannedText(text: String) {
+        
+        textView.text = text
+        
+        Task {
+            do {
+                
+                print("WHIRRRR")
+                
+                let session = LanguageModelSession(instructions: instructions)
+                
+                let response = try await session.respond(
+                    to: text,
+                    generating: WallLabel.self
+                )
+               
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                
+                let enc = try encoder.encode(response.content)
+                print(String(data: enc, encoding: .utf8) )
+                
+            } catch {
+                print("SAD \(error)")
+            }
+        }
+    }
 }
 
 extension ViewController: UICollectionViewDataSource {
@@ -90,8 +146,6 @@ extension ViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
                 
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
-        
-            // cell.contentView.printAllSubviews()
     
             if let imageView = cell.viewWithTag(100) as? UIImageView {
                 imageView.image = images[indexPath.row]
@@ -100,16 +154,6 @@ extension ViewController: UICollectionViewDataSource {
             return cell
 
         }
-}
-
-extension UIView {
-    func printAllSubviews() {
-        print("SUBVIEWS")
-        for subview in subviews {
-            print("Subview: \(subview)")
-            subview.printAllSubviews()
-        }
-    }
 }
 
 extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -169,7 +213,8 @@ extension ViewController: DataScannerViewControllerDelegate {
         case .text(let text):
             // self.addNewRow(withText: text.transcript)
             print(text.transcript)
-            textView.text = text.transcript
+            //textView.text = text.transcript
+            self.processScannedText(text: text.transcript)
             
         case .barcode(let barcode):
             
