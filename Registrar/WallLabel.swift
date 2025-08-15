@@ -6,7 +6,7 @@ struct WallLabel: Codable {
     var title: String?
 
     @Guide(description: "The year that an object was created")
-    var date: Int?
+    var date: String?
 
     @Guide(description: "The individual or organization responsible for creating an object.")
     var creator: String?

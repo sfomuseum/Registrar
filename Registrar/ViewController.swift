@@ -14,11 +14,11 @@ class ViewController: UIViewController {
     var images = [UIImage]()
     let cellReuseIdentifier = "cell"
     
-    private let locationManager = CLLocationManager()
+    let locationManager = CLLocationManager()
     
-    private var current_location: CLLocation?
+    var current_location: CLLocation?
     
-    private var keyValuePairs: [(String, String)] = []
+    var keyValuePairs: [(String, String)] = []
     
     var isDataScannerAvailable: Bool {
         DataScannerViewController.isAvailable &&
@@ -64,17 +64,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // textView.isEditable = false
-        
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(KeyValueTableViewCell.self, forCellReuseIdentifier: "KeyValueCell")
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.layer.borderWidth = 1.0
+        tableView.layer.borderColor = UIColor.black.cgColor
         
         self.collectionView.dataSource = self
         self.progressView.isHidden = true
@@ -84,7 +84,6 @@ class ViewController: UIViewController {
     func processScannedText(text: String) {
         
         print("Scanned '\(text)'")
-        // textView.text = text
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
@@ -106,7 +105,7 @@ class ViewController: UIViewController {
                     to: text,
                     generating: WallLabel.self
                 )
-                                      
+                
                 label.title = response.content.title
                 label.date = response.content.date
                 label.creator = response.content.creator
@@ -114,7 +113,7 @@ class ViewController: UIViewController {
                 label.accession_number = response.content.accession_number
                 label.medium = response.content.medium
                 label.creditline = response.content.creditline
-                                
+                
                 // End of make this a WallLabel method
                 
                 let encoder = JSONEncoder()
@@ -143,24 +142,6 @@ class ViewController: UIViewController {
         }
     }
     
-    private func updateTableData(label: WallLabel) {
-
-            // Populate the key-value pairs
-            let dict = propertiesToDictionary(instance: label)
-        
-            var newKeyValuePairs: [(String, String)] = []
-            for (key, value) in dict {
-                if let stringValue = value as? String {
-                    newKeyValuePairs.append((key, stringValue))
-                } else if let numberValue = value as? NSNumber {
-                    newKeyValuePairs.append((key, "\(numberValue)"))
-                }
-            }
-
-            keyValuePairs = newKeyValuePairs
-            tableView.reloadData()
-        }
-    
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(
             title: title,
@@ -170,169 +151,14 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
-    
-    //
-    
-    
-    
-}
-
-extension ViewController: UICollectionViewDataSource {
-        
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return images.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellReuseIdentifier, for: indexPath)
-        
-        cell.layer.borderColor = UIColor.black.cgColor
-        cell.layer.borderWidth = 2
-        
-        if let imageView = cell.viewWithTag(100) as? UIImageView {
-            imageView.image = images[indexPath.row]
-            
-            let interaction = ImageMenuInteraction(delegate: self)
-            interaction.indexPath = indexPath
-            interaction.row = indexPath.row
-            
-            cell.addInteraction(interaction)
-        }
-        
-        return cell
-        
-    }
-}
-
-extension ViewController: UIContextMenuInteractionDelegate {
-    
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        
-        guard let im_interaction = interaction as? ImageMenuInteraction else {
-            return nil
-        }
-        
-        guard let indexPath = im_interaction.indexPath else {
-            return nil
-        }
-        
-        guard let row = im_interaction.row else {
-            return nil
-        }
-        
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { suggestedActions in
-                        
-            let deleteAction = UIAction(title: "Delete", image: UIImage(systemName: "trash")) { action in
-                self.images.remove(at: row)
-                self.collectionView.deleteItems(at: [indexPath])
-            }
-            
-            return UIMenu(title: "", children: [deleteAction])
-        }
-    }
-}
-
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
-
-    // MARK: - Table view data source
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return keyValuePairs.count
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        let (key, value) = keyValuePairs[indexPath.row]
-        print("ADD \(key): \(value)")
-        cell.textLabel?.text = "\(key): \(value)"
-        return cell
-    }
-    
-    func propertiesToDictionary<T: Codable>(instance: T) -> [String: Any] {
-        var dictionary = [String: Any]()
-
-        let mirror = Mirror(reflecting: instance)
-        for child in mirror.children {
-            if let propertyName = child.label {
-                dictionary[propertyName] = child.value
-            }
-        }
-
-        return dictionary
-    }
-}
-
-extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-        if let image = info[.originalImage] as? UIImage {
-            images.append(image)
-            collectionView.reloadData()
-        }
-        picker.dismiss(animated: true)
-    }
-    
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true)
-    }
-}
-
-extension ViewController: DataScannerViewControllerDelegate {
-    
-    func configureDataScanner() {
-        
-        let recognitionDataTypes: Set<DataScannerViewController.RecognizedDataType> = [
-            .text(languages: ["en-US"]),
-            .barcode(symbologies: [.qr, .aztec, .microPDF417, .pdf417, .code128]),
-        ]
-        
-        let dataScanner = DataScannerViewController(
-            recognizedDataTypes: recognitionDataTypes,
-            qualityLevel: .balanced,
-            recognizesMultipleItems: false,
-            isHighFrameRateTrackingEnabled: true,
-            isGuidanceEnabled: true,
-            isHighlightingEnabled: true
-        )
-        
-        dataScanner.delegate = self
-        present(dataScanner, animated: true) {
-            try? dataScanner.startScanning()
-        }
-    }
-    
-    func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
-        switch item {
-        case .text(let text):
-            
-            self.processScannedText(text: text.transcript)
-            
-        case .barcode(let barcode):
-            
-            if barcode.payloadStringValue != nil {
-                self.processScannedText(text: barcode.payloadStringValue!)
-            }
-            
-        default:
-            print("unexpected item")
-        }
-    }
 }
 
 
-extension ViewController: CLLocationManagerDelegate {
-    
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        
-        if let lastLocation = locations.last {
-            current_location = lastLocation
-        }
-    }
-}
+
+
+
+
+
+
+
 
