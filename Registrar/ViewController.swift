@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  Registrar
-//
-//  Created by asc on 8/14/25.
-//
-
 import UIKit
 import Vision
 import VisionKit
@@ -60,11 +53,7 @@ class ViewController: UIViewController {
     
     private let locationManager = CLLocationManager()
     
-    private var current_location: CLLocation?{
-        willSet(loc){
-            // print("Set current location \(loc)")
-        }
-    }
+    private var current_location: CLLocation?
     
     var isDataScannerAvailable: Bool {
         DataScannerViewController.isAvailable &&
@@ -80,7 +69,6 @@ class ViewController: UIViewController {
     @IBOutlet var textView: UITextView!
         
     @IBOutlet weak var collectionView: UICollectionView!
-    
     
     @IBOutlet weak var progressView: UIActivityIndicatorView!
     
@@ -135,15 +123,13 @@ class ViewController: UIViewController {
         Task {
             do {
                 
-                print("WHIRRRR")
-                
                 let session = LanguageModelSession(instructions: instructions)
                 
                 let response = try await session.respond(
                     to: text,
                     generating: WallLabel.self
                 )
-               
+                
                 var label = response.content
                 label.input = text
                 label.timestamp = Int(NSDate().timeIntervalSince1970)
@@ -156,19 +142,33 @@ class ViewController: UIViewController {
                 let enc = try encoder.encode(label)
                 
                 DispatchQueue.main.async {
+                    
+                    self.progressView.stopAnimating()
+                    self.progressView.isHidden = true
+                    
                     self.textView.text = String(data: enc, encoding: .utf8)
                 }
                 
             } catch {
-                print("SAD \(error)")
+                DispatchQueue.main.async {
+                    self.progressView.stopAnimating()
+                    self.progressView.isHidden = true
+                }
+                
+                showUnavailableAlert()
             }
             
-            DispatchQueue.main.async {
-                self.progressView.stopAnimating()
-                self.progressView.isHidden = true
-            }
-                
         }
+    }
+    
+    func showUnavailableAlert() {
+        let alert = UIAlertController(
+            title: "Your device is not compatible!",
+            message: "To use, open app on a devices with iOS 16 or above and accept the terms.",
+            preferredStyle: UIAlertController.Style.alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -196,8 +196,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         if let image = info[.originalImage] as? UIImage {
-            // imageView.image = image
-            
             images.append(image)
             collectionView.reloadData()
         }
@@ -210,16 +208,6 @@ extension ViewController: UIImagePickerControllerDelegate, UINavigationControlle
 }
 
 extension ViewController: DataScannerViewControllerDelegate {
-    
-    func showUnavailableAlert() {
-        let alert = UIAlertController(
-            title: "Your device is not compatible!",
-            message: "To use, open app on a devices with iOS 16 or above and accept the terms.",
-            preferredStyle: UIAlertController.Style.alert
-        )
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
-    }
     
     func configureDataScanner() {
         

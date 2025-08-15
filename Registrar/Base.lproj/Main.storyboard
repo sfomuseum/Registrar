@@ -90,6 +90,7 @@
                                                 </imageView>
                                             </subviews>
                                         </collectionViewCellContentView>
+                                        <size key="customSize" width="256" height="256"/>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="1AM-m9-Fu1">
                                         <rect key="frame" x="289" y="0.0" width="256" height="256"/>
