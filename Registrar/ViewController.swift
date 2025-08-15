@@ -18,6 +18,8 @@ class ViewController: UIViewController {
     
     private var current_location: CLLocation?
     
+    private var keyValuePairs: [(String, String)] = []
+    
     var isDataScannerAvailable: Bool {
         DataScannerViewController.isAvailable &&
         DataScannerViewController.isSupported
@@ -30,6 +32,8 @@ class ViewController: UIViewController {
     @IBOutlet var saveButton: UIBarButtonItem!
     
     @IBOutlet var textView: UITextView!
+    
+    @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -60,13 +64,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textView.isEditable = false
+        // textView.isEditable = false
         
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
+        
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.dataSource = self
+        tableView.delegate = self
         
         self.collectionView.dataSource = self
         self.progressView.isHidden = true
@@ -75,7 +83,8 @@ class ViewController: UIViewController {
     
     func processScannedText(text: String) {
         
-        textView.text = text
+        print("Scanned '\(text)'")
+        // textView.text = text
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
@@ -117,7 +126,9 @@ class ViewController: UIViewController {
                     self.progressView.stopAnimating()
                     self.progressView.isHidden = true
                     
-                    self.textView.text = String(data: enc, encoding: .utf8)
+                    self.updateTableData(label: label)
+                    
+                    // self.textView.text = String(data: enc, encoding: .utf8)
                 }
                 
             } catch {
@@ -132,6 +143,24 @@ class ViewController: UIViewController {
         }
     }
     
+    private func updateTableData(label: WallLabel) {
+
+            // Populate the key-value pairs
+            let dict = propertiesToDictionary(instance: label)
+        
+            var newKeyValuePairs: [(String, String)] = []
+            for (key, value) in dict {
+                if let stringValue = value as? String {
+                    newKeyValuePairs.append((key, stringValue))
+                } else if let numberValue = value as? NSNumber {
+                    newKeyValuePairs.append((key, "\(numberValue)"))
+                }
+            }
+
+            keyValuePairs = newKeyValuePairs
+            tableView.reloadData()
+        }
+    
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(
             title: title,
@@ -141,6 +170,11 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
+    
+    //
+    
+    
+    
 }
 
 extension ViewController: UICollectionViewDataSource {
@@ -196,6 +230,40 @@ extension ViewController: UIContextMenuInteractionDelegate {
             
             return UIMenu(title: "", children: [deleteAction])
         }
+    }
+}
+
+extension ViewController: UITableViewDataSource, UITableViewDelegate {
+
+    // MARK: - Table view data source
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return keyValuePairs.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        let (key, value) = keyValuePairs[indexPath.row]
+        print("ADD \(key): \(value)")
+        cell.textLabel?.text = "\(key): \(value)"
+        return cell
+    }
+    
+    func propertiesToDictionary<T: Codable>(instance: T) -> [String: Any] {
+        var dictionary = [String: Any]()
+
+        let mirror = Mirror(reflecting: instance)
+        for child in mirror.children {
+            if let propertyName = child.label {
+                dictionary[propertyName] = child.value
+            }
+        }
+
+        return dictionary
     }
 }
 
@@ -257,6 +325,7 @@ extension ViewController: DataScannerViewControllerDelegate {
     }
 }
 
+
 extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -266,3 +335,4 @@ extension ViewController: CLLocationManagerDelegate {
         }
     }
 }
+

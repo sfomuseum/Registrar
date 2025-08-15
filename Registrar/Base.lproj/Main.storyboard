@@ -57,16 +57,6 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="STs-af-KJR">
-                                <rect key="frame" x="0.0" y="861" width="834" height="250"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="250" id="HDT-9g-XWW"/>
-                                </constraints>
-                                <color key="textColor" systemColor="labelColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cfh-Zy-pPD">
                                 <rect key="frame" x="0.0" y="24" width="834" height="829"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -161,24 +151,31 @@
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="NVK-eS-4Rz">
                                 <rect key="frame" x="399" y="1120" width="36" height="36"/>
                             </activityIndicatorView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xU3-hT-dxe">
+                                <rect key="frame" x="0.0" y="861" width="834" height="250"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="250" id="vNP-Li-641"/>
+                                </constraints>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="1eo-rP-SP3"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NVK-eS-4Rz" secondAttribute="trailing" constant="399" id="40Q-0g-r4G"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4UF-H3-gw9"/>
-                            <constraint firstItem="STs-af-KJR" firstAttribute="top" secondItem="cfh-Zy-pPD" secondAttribute="bottom" constant="8" id="8m3-bY-C8M"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="9QZ-Xp-oDg"/>
-                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1096" id="ERc-eE-4FT"/>
-                            <constraint firstItem="STs-af-KJR" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="bMk-LZ-tw7"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="gCS-of-WhR"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="i3i-Ar-Bd6"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="NVK-eS-4Rz" secondAttribute="bottom" constant="9" id="kzn-bC-INF"/>
-                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="399" id="p6C-hU-MXC"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="top" secondItem="STs-af-KJR" secondAttribute="bottom" id="q2t-wg-E9Z"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="umo-GP-aq2"/>
-                            <constraint firstItem="STs-af-KJR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="xw3-lG-ZeC"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="45W-aj-LPo"/>
+                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="399" id="9Xt-7g-nKs"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="top" secondItem="cfh-Zy-pPD" secondAttribute="bottom" constant="8" id="9x5-KN-NZy"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="top" secondItem="xU3-hT-dxe" secondAttribute="bottom" id="LH2-3N-IcU"/>
+                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1096" id="Ny4-aL-JlZ"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="PeO-CL-DFG"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="NVK-eS-4Rz" secondAttribute="bottom" constant="9" id="RvV-9D-o2m"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="X82-J3-cev"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="k5V-En-x6k"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="omN-we-BdT"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NVK-eS-4Rz" secondAttribute="trailing" constant="399" id="p00-yz-Ccm"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="rA9-Mi-lsc"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="t6P-cO-XRb"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="xXb-CW-YuK"/>
                         </constraints>
                     </view>
                     <connections>
@@ -187,7 +184,7 @@
                         <outlet property="progressView" destination="NVK-eS-4Rz" id="PUV-Az-lcG"/>
                         <outlet property="saveButton" destination="WXk-DX-Q3b" id="ogB-Tz-b2x"/>
                         <outlet property="scanButton" destination="A13-o1-lt1" id="SLD-oM-HL0"/>
-                        <outlet property="textView" destination="STs-af-KJR" id="2xI-YT-apP"/>
+                        <outlet property="tableView" destination="xU3-hT-dxe" id="x5b-6J-TBN"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -196,9 +193,6 @@
         </scene>
     </scenes>
     <resources>
-        <systemColor name="labelColor">
-            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
