@@ -81,6 +81,9 @@ class ViewController: UIViewController {
         
     @IBOutlet weak var collectionView: UICollectionView!
     
+    
+    @IBOutlet weak var progressView: UIActivityIndicatorView!
+    
     @IBAction func captureButton(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -118,11 +121,16 @@ class ViewController: UIViewController {
         locationManager.delegate = self
         
         self.collectionView.dataSource = self
+        self.progressView.isHidden = true
+        
     }
 
     func processScannedText(text: String) {
         
         textView.text = text
+        
+        self.progressView.isHidden = false
+        self.progressView.startAnimating()
         
         Task {
             do {
@@ -146,7 +154,6 @@ class ViewController: UIViewController {
                 encoder.outputFormatting = .prettyPrinted
                 
                 let enc = try encoder.encode(label)
-                // print(String(data: enc, encoding: .utf8) )
                 
                 DispatchQueue.main.async {
                     self.textView.text = String(data: enc, encoding: .utf8)
@@ -155,6 +162,12 @@ class ViewController: UIViewController {
             } catch {
                 print("SAD \(error)")
             }
+            
+            DispatchQueue.main.async {
+                self.progressView.stopAnimating()
+                self.progressView.isHidden = true
+            }
+                
         }
     }
 }
@@ -233,16 +246,13 @@ extension ViewController: DataScannerViewControllerDelegate {
     func dataScanner(_ dataScanner: DataScannerViewController, didTapOn item: RecognizedItem) {
         switch item {
         case .text(let text):
-            // self.addNewRow(withText: text.transcript)
-            print(text.transcript)
-            //textView.text = text.transcript
+
             self.processScannedText(text: text.transcript)
             
         case .barcode(let barcode):
             
             if barcode.payloadStringValue != nil {
-                // print("barcode: \(barcode.payloadStringValue ?? "unknown")")
-                // self.addNewRow(withText: barcode.payloadStringValue!)
+                self.processScannedText(text: barcode.payloadStringValue!)
             }
             
         default:
@@ -258,6 +268,5 @@ extension ViewController: CLLocationManagerDelegate {
         if let lastLocation = locations.last {
             current_location = lastLocation
         }
-        
     }
 }

@@ -21,6 +21,7 @@
                                 <rect key="frame" x="0.0" y="1111" width="834" height="54"/>
                                 <items>
                                     <navigationItem id="kze-Ic-dxQ">
+                                        <nil key="title"/>
                                         <leftBarButtonItems>
                                             <barButtonItem style="plain" id="oI8-Ja-Qfy">
                                                 <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="Kyp-T9-AkI">
@@ -156,17 +157,24 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="NVK-eS-4Rz">
+                                <rect key="frame" x="399" y="1120" width="36" height="36"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YQf-dQ-URD" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="1eo-rP-SP3"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NVK-eS-4Rz" secondAttribute="trailing" constant="399" id="40Q-0g-r4G"/>
                             <constraint firstItem="YQf-dQ-URD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="4UF-H3-gw9"/>
                             <constraint firstItem="STs-af-KJR" firstAttribute="top" secondItem="cfh-Zy-pPD" secondAttribute="bottom" constant="8" id="8m3-bY-C8M"/>
                             <constraint firstItem="cfh-Zy-pPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="9QZ-Xp-oDg"/>
+                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1096" id="ERc-eE-4FT"/>
                             <constraint firstItem="STs-af-KJR" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="bMk-LZ-tw7"/>
                             <constraint firstItem="cfh-Zy-pPD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="gCS-of-WhR"/>
                             <constraint firstItem="cfh-Zy-pPD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="i3i-Ar-Bd6"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="NVK-eS-4Rz" secondAttribute="bottom" constant="9" id="kzn-bC-INF"/>
+                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="399" id="p6C-hU-MXC"/>
                             <constraint firstItem="YQf-dQ-URD" firstAttribute="top" secondItem="STs-af-KJR" secondAttribute="bottom" id="q2t-wg-E9Z"/>
                             <constraint firstItem="YQf-dQ-URD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="umo-GP-aq2"/>
                             <constraint firstItem="STs-af-KJR" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="xw3-lG-ZeC"/>
@@ -175,6 +183,7 @@
                     <connections>
                         <outlet property="captureButton" destination="oI8-Ja-Qfy" id="OTh-bO-Gpr"/>
                         <outlet property="collectionView" destination="cfh-Zy-pPD" id="Czs-AH-OUP"/>
+                        <outlet property="progressView" destination="NVK-eS-4Rz" id="PUV-Az-lcG"/>
                         <outlet property="saveButton" destination="WXk-DX-Q3b" id="ogB-Tz-b2x"/>
                         <outlet property="scanButton" destination="A13-o1-lt1" id="SLD-oM-HL0"/>
                         <outlet property="textView" destination="STs-af-KJR" id="2xI-YT-apP"/>
