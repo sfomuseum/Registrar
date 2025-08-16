@@ -13,7 +13,12 @@ class ViewController: UIViewController {
     
     var label = WallLabel("")
         
-    var images = [UIImage]()
+    var images = [UIImage](){
+        willSet(i){
+            // print("Update images \(i.count)")
+        }
+    }
+    
     let cellReuseIdentifier = "cell"
     
     let locationManager = CLLocationManager()
@@ -31,9 +36,6 @@ class ViewController: UIViewController {
     
     @IBOutlet var scanButton: UIBarButtonItem!
     
-    
-    @IBOutlet var textView: UITextView!
-    
     @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var collectionView: UICollectionView!
@@ -41,6 +43,27 @@ class ViewController: UIViewController {
     @IBOutlet weak var progressView: UIActivityIndicatorView!
     
     @IBOutlet weak var resetButton: UIBarButtonItem!
+    
+    @IBOutlet var exportButton: UIBarButtonItem!
+    
+    @IBAction func exportRecords(_ sender: UIButton){
+        
+        let rsp = self.label.marshalJSON()
+        var meta: String
+        
+        switch (rsp) {
+        case .failure(let err):
+            return
+        case .success(let data):
+           
+            guard let str_data = String(data: data, encoding: .utf8) else {
+                return
+            }
+            
+            meta = str_data
+        }
+        
+    }
     
     @IBAction func resetButton(_ sender: UIButton) {
         
@@ -115,7 +138,6 @@ class ViewController: UIViewController {
         self.configureDataScanner()
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -147,12 +169,14 @@ class ViewController: UIViewController {
         label.timestamp = Int(NSDate().timeIntervalSince1970)
         label.latitude = self.current_location?.coordinate.latitude ?? 0.0
         label.longitude = self.current_location?.coordinate.longitude ?? 0.0
-        
+                
         Task {
             do {
                 
+                // This doesn't work yet because of concurrency issues
+                // let rsp = await label.Parse()
+                                
                 // Start of make this a WallLabel method
-                // There are "immutable self" errors to work out...
                 
                 let session = LanguageModelSession(instructions: instructions)
                 

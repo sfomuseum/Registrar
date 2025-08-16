@@ -40,6 +40,38 @@ struct WallLabel: Codable {
         input = raw
     }
  
+    // This doesn't work yet because of concurrency issues
+    
+    /*
+    public mutating func Parse() async -> Result<Void, Error> {
+        
+        let instructions = """
+            Parse this text as though it were a wall label in a museum describing an object.
+            Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, Lfollowed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
+            """
+        
+        let session = LanguageModelSession(instructions: instructions)
+        
+        do {
+            let response = try await session.respond(
+                to: input,
+                generating: WallLabel.self
+            )
+            
+            title = response.content.title
+            date = response.content.date
+            creator = response.content.creator
+            location = response.content.location
+            accession_number = response.content.accession_number
+            medium = response.content.medium
+            creditline = response.content.creditline
+            
+            return .success(())
+        } catch {
+            return .failure(error)
+        }
+    }
+    */
     
     public func displayKeys() -> [String] {
         
@@ -61,9 +93,7 @@ struct WallLabel: Codable {
     
     public mutating func setProperty(key: String, value: Any) -> Bool {
         
-        switch (key){
-        case "title", "date", "creator", "medium", "location", "creditline", "accession_number":
-            
+
             switch(key) {
             case "title":
                 self.title = "\(value)"
@@ -79,15 +109,22 @@ struct WallLabel: Codable {
                 self.creditline = "\(value)"
             case "accession_number":
                 self.accession_number = "\(value)"
+            /*
+            case "latitude":
+                self.latitude = value as? Float64
+            case "longitude":
+                self.longitude = value as? Float64
+            case "created":
+                self.timestamp = value as? Int
+            */
             default:
-                ()
+                return false
             }
             
-            return true
-        default:
-            return false
-        }
+        return true
+        
     }
+    
     public func isKeyEditable(key: String) -> Bool {
         
         switch (key) {

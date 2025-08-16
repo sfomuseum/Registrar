@@ -46,6 +46,17 @@
                                                 </button>
                                             </barButtonItem>
                                         </leftBarButtonItems>
+                                        <barButtonItem key="rightBarButtonItem" style="plain" id="9Wz-XT-Fgh">
+                                            <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="gOc-M7-TV3">
+                                                <rect key="frame" x="746" y="4.75" width="74" height="34.5"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="Export"/>
+                                                <connections>
+                                                    <action selector="exportRecords:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lmi-IS-aBu"/>
+                                                </connections>
+                                            </button>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -191,6 +202,7 @@
                     <connections>
                         <outlet property="captureButton" destination="oI8-Ja-Qfy" id="OTh-bO-Gpr"/>
                         <outlet property="collectionView" destination="cfh-Zy-pPD" id="Czs-AH-OUP"/>
+                        <outlet property="exportButton" destination="9Wz-XT-Fgh" id="QFd-q9-Dgj"/>
                         <outlet property="progressView" destination="NVK-eS-4Rz" id="PUV-Az-lcG"/>
                         <outlet property="resetButton" destination="GQJ-pC-qi4" id="g4j-eO-v8C"/>
                         <outlet property="scanButton" destination="A13-o1-lt1" id="SLD-oM-HL0"/>
