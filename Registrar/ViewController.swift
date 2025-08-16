@@ -12,7 +12,7 @@ class ViewController: UIViewController {
         """
     
     var label = WallLabel("")
-    
+        
     var images = [UIImage]()
     let cellReuseIdentifier = "cell"
     
@@ -31,7 +31,6 @@ class ViewController: UIViewController {
     
     @IBOutlet var scanButton: UIBarButtonItem!
     
-    @IBOutlet var saveButton: UIBarButtonItem!
     
     @IBOutlet var textView: UITextView!
     
@@ -40,6 +39,59 @@ class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     @IBOutlet weak var progressView: UIActivityIndicatorView!
+    
+    @IBOutlet weak var resetButton: UIBarButtonItem!
+    
+    @IBAction func resetButton(_ sender: UIButton) {
+        
+        let alertController = UIAlertController(title: "Confirm Action", message: "Are you sure you want to reset everything?", preferredStyle: .alert)
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+
+            self.clearCollectionView()
+            self.clearTable()
+        }
+
+        alertController.addAction(cancelAction)
+        alertController.addAction(okAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    // This was added to account for low-light conditions
+    // when using the DataScanner but the DataScanner ends
+    // up turning the torch off...
+    
+    /*
+    @IBOutlet weak var lightButton: UIBarButtonItem!
+    
+    @IBAction func lightButton(_ sender: UIButton) {
+        
+        guard let device = AVCaptureDevice.default(for: .video) else {
+            return
+        }
+        
+        if device.hasTorch {
+                do {
+                    try device.lockForConfiguration()
+
+                    if device.torchMode == .off {
+                        try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
+                    } else {
+                        device.torchMode = .off
+                    }
+
+                    device.unlockForConfiguration()
+                } catch {
+                    print("Torch could not be used")
+                }
+            } else {
+                print("Torch is not available")
+            }
+    }
+    */
     
     @IBAction func captureButton(_ sender: UIButton) {
         
@@ -62,6 +114,7 @@ class ViewController: UIViewController {
         
         self.configureDataScanner()
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,20 +171,11 @@ class ViewController: UIViewController {
                 
                 // End of make this a WallLabel method
                 
-                /*
-                let encoder = JSONEncoder()
-                encoder.outputFormatting = .prettyPrinted
-                let enc = try encoder.encode(label)
-                */
-                
                 DispatchQueue.main.async {
                     
                     self.progressView.stopAnimating()
                     self.progressView.isHidden = true
-                    
                     self.updateTableData(label: self.label)
-                    
-                    // self.textView.text = String(data: enc, encoding: .utf8)
                 }
                 
             } catch {

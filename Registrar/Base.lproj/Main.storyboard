@@ -46,29 +46,11 @@
                                                 </button>
                                             </barButtonItem>
                                         </leftBarButtonItems>
-                                        <rightBarButtonItems>
-                                            <barButtonItem style="plain" id="GQJ-pC-qi4">
-                                                <button key="customView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nuU-CF-l5T">
-                                                    <rect key="frame" x="752.5" y="4.75" width="67.5" height="34.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="filled" title="Reset"/>
-                                                </button>
-                                            </barButtonItem>
-                                            <barButtonItem style="plain" id="WXk-DX-Q3b">
-                                                <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="iJJ-7w-mnR">
-                                                    <rect key="frame" x="675.5" y="4.75" width="61" height="34.5"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Button"/>
-                                                    <buttonConfiguration key="configuration" style="filled" title="Save"/>
-                                                </button>
-                                            </barButtonItem>
-                                        </rightBarButtonItems>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="cfh-Zy-pPD">
-                                <rect key="frame" x="0.0" y="24" width="834" height="829"/>
+                                <rect key="frame" x="0.0" y="78" width="834" height="825"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="8" minimumInteritemSpacing="0.0" id="CLM-Wa-soT">
                                     <size key="itemSize" width="270" height="270"/>
@@ -158,41 +140,59 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="NVK-eS-4Rz">
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="NVK-eS-4Rz">
                                 <rect key="frame" x="399" y="1120" width="36" height="36"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="xU3-hT-dxe">
-                                <rect key="frame" x="0.0" y="861" width="834" height="250"/>
+                                <rect key="frame" x="0.0" y="911" width="834" height="200"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="250" id="vNP-Li-641"/>
+                                    <constraint firstAttribute="height" constant="200" id="y6C-Go-Wv9"/>
                                 </constraints>
                             </tableView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cz9-aZ-GZI">
+                                <rect key="frame" x="0.0" y="24" width="834" height="54"/>
+                                <items>
+                                    <navigationItem title="Registrar" id="3gc-tW-rbk">
+                                        <barButtonItem key="rightBarButtonItem" style="plain" id="GQJ-pC-qi4">
+                                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="nuU-CF-l5T">
+                                                <rect key="frame" x="752.5" y="4.75" width="67.5" height="34.5"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="Reset"/>
+                                                <connections>
+                                                    <action selector="resetButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cbZ-qO-vGR"/>
+                                                </connections>
+                                            </button>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="xU3-hT-dxe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="45W-aj-LPo"/>
-                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="399" id="9Xt-7g-nKs"/>
-                            <constraint firstItem="xU3-hT-dxe" firstAttribute="top" secondItem="cfh-Zy-pPD" secondAttribute="bottom" constant="8" id="9x5-KN-NZy"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="top" secondItem="xU3-hT-dxe" secondAttribute="bottom" id="LH2-3N-IcU"/>
-                            <constraint firstItem="NVK-eS-4Rz" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="1096" id="Ny4-aL-JlZ"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="PeO-CL-DFG"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="NVK-eS-4Rz" secondAttribute="bottom" constant="9" id="RvV-9D-o2m"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="X82-J3-cev"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="k5V-En-x6k"/>
-                            <constraint firstItem="xU3-hT-dxe" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="omN-we-BdT"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="NVK-eS-4Rz" secondAttribute="trailing" constant="399" id="p00-yz-Ccm"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="rA9-Mi-lsc"/>
-                            <constraint firstItem="YQf-dQ-URD" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="t6P-cO-XRb"/>
-                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="xXb-CW-YuK"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="top" secondItem="xU3-hT-dxe" secondAttribute="bottom" id="B9i-Qk-76L"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="E24-pa-WwB"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="MXd-BB-mR8"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="R7f-Re-Gaw"/>
+                            <constraint firstItem="cz9-aZ-GZI" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Spo-zi-FaL"/>
+                            <constraint firstItem="cz9-aZ-GZI" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Tvh-lK-LFL"/>
+                            <constraint firstItem="YQf-dQ-URD" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Vlt-P7-Ufv"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="top" secondItem="cfh-Zy-pPD" secondAttribute="bottom" constant="8" id="Wlb-O8-wCp"/>
+                            <constraint firstItem="cz9-aZ-GZI" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="f1W-xF-DSj"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="fu1-A3-XqL"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="m3G-yv-wTk"/>
+                            <constraint firstItem="xU3-hT-dxe" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="oJz-z9-3X3"/>
+                            <constraint firstItem="cfh-Zy-pPD" firstAttribute="top" secondItem="cz9-aZ-GZI" secondAttribute="bottom" id="z6p-Hi-NXb"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="captureButton" destination="oI8-Ja-Qfy" id="OTh-bO-Gpr"/>
                         <outlet property="collectionView" destination="cfh-Zy-pPD" id="Czs-AH-OUP"/>
                         <outlet property="progressView" destination="NVK-eS-4Rz" id="PUV-Az-lcG"/>
-                        <outlet property="saveButton" destination="WXk-DX-Q3b" id="ogB-Tz-b2x"/>
+                        <outlet property="resetButton" destination="GQJ-pC-qi4" id="g4j-eO-v8C"/>
                         <outlet property="scanButton" destination="A13-o1-lt1" id="SLD-oM-HL0"/>
                         <outlet property="tableView" destination="xU3-hT-dxe" id="x5b-6J-TBN"/>
                     </connections>

@@ -26,4 +26,18 @@ extension ViewController: UICollectionViewDataSource {
         return cell
         
     }
+    
+    func clearCollectionView() {
+        let numberOfRows = images.count
+        var indexPathsToDelete = [IndexPath]()
+        
+        for row in 0..<numberOfRows {
+            let indexPath = IndexPath(row: row, section: 0)
+            indexPathsToDelete.append(indexPath)
+        }
+        
+        images.removeAll()
+        
+        collectionView.deleteItems(at: indexPathsToDelete)
+    }
 }

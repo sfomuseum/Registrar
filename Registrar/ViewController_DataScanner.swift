@@ -13,7 +13,7 @@ extension ViewController: DataScannerViewControllerDelegate {
         
         let dataScanner = DataScannerViewController(
             recognizedDataTypes: recognitionDataTypes,
-            qualityLevel: .balanced,
+            qualityLevel: .accurate,
             recognizesMultipleItems: false,
             isHighFrameRateTrackingEnabled: true,
             isGuidanceEnabled: true,
