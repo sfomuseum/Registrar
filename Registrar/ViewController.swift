@@ -3,6 +3,7 @@ import Vision
 import VisionKit
 import CoreLocation
 import FoundationModels
+import Photos
 
 class ViewController: UIViewController {
     
@@ -12,7 +13,7 @@ class ViewController: UIViewController {
         """
     
     var label = WallLabel("")
-        
+    
     var images = [UIImage](){
         willSet(i){
             // print("Update images \(i.count)")
@@ -53,9 +54,10 @@ class ViewController: UIViewController {
         
         switch (rsp) {
         case .failure(let err):
+            print(err)
             return
         case .success(let data):
-           
+            
             guard let str_data = String(data: data, encoding: .utf8) else {
                 return
             }
@@ -63,58 +65,29 @@ class ViewController: UIViewController {
             meta = str_data
         }
         
+        for im in images {
+            self.saveImage(image: im, meta: meta)
+        }
+        
     }
     
     @IBAction func resetButton(_ sender: UIButton) {
         
         let alertController = UIAlertController(title: "Confirm Action", message: "Are you sure you want to reset everything?", preferredStyle: .alert)
-
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
         let okAction = UIAlertAction(title: "OK", style: .default) { _ in
-
+            
             self.clearCollectionView()
             self.clearTable()
         }
-
+        
         alertController.addAction(cancelAction)
         alertController.addAction(okAction)
         
         present(alertController, animated: true, completion: nil)
     }
-    
-    // This was added to account for low-light conditions
-    // when using the DataScanner but the DataScanner ends
-    // up turning the torch off...
-    
-    /*
-    @IBOutlet weak var lightButton: UIBarButtonItem!
-    
-    @IBAction func lightButton(_ sender: UIButton) {
-        
-        guard let device = AVCaptureDevice.default(for: .video) else {
-            return
-        }
-        
-        if device.hasTorch {
-                do {
-                    try device.lockForConfiguration()
-
-                    if device.torchMode == .off {
-                        try device.setTorchModeOn(level: AVCaptureDevice.maxAvailableTorchLevel)
-                    } else {
-                        device.torchMode = .off
-                    }
-
-                    device.unlockForConfiguration()
-                } catch {
-                    print("Torch could not be used")
-                }
-            } else {
-                print("Torch is not available")
-            }
-    }
-    */
     
     @IBAction func captureButton(_ sender: UIButton) {
         
@@ -169,13 +142,13 @@ class ViewController: UIViewController {
         label.timestamp = Int(NSDate().timeIntervalSince1970)
         label.latitude = self.current_location?.coordinate.latitude ?? 0.0
         label.longitude = self.current_location?.coordinate.longitude ?? 0.0
-                
+        
         Task {
             do {
                 
                 // This doesn't work yet because of concurrency issues
                 // let rsp = await label.Parse()
-                                
+                
                 // Start of make this a WallLabel method
                 
                 let session = LanguageModelSession(instructions: instructions)
@@ -213,6 +186,49 @@ class ViewController: UIViewController {
             
         }
     }
+    
+    func saveImage(image: UIImage, meta: String) {
+        
+        let imageData: Data = image.jpegData(compressionQuality: 1)!
+        
+        let cgImgSource: CGImageSource = CGImageSourceCreateWithData(imageData as CFData, nil)!
+        let uti: CFString = CGImageSourceGetType(cgImgSource)!
+        let dataWithEXIF: NSMutableData = NSMutableData(data: imageData)
+        
+        let destination: CGImageDestination = CGImageDestinationCreateWithData((dataWithEXIF as CFMutableData), uti, 1, nil)!
+        
+        let imageProperties = CGImageSourceCopyPropertiesAtIndex(cgImgSource, 0, nil)! as NSDictionary
+        let mutable: NSMutableDictionary = imageProperties.mutableCopy() as! NSMutableDictionary
+        
+        var EXIFDictionary: NSMutableDictionary = (mutable[kCGImagePropertyExifDictionary as String] as? NSMutableDictionary)!
+        
+        EXIFDictionary[kCGImagePropertyExifUserComment as String] = meta
+        
+        mutable[kCGImagePropertyExifDictionary as String] = EXIFDictionary
+        
+        CGImageDestinationAddImageFromSource(destination, cgImgSource, 0, (mutable as CFDictionary))
+        
+        guard CGImageDestinationFinalize(destination) else {
+            print("CGSad")
+            return
+        }
+        
+        let jpeg_data = dataWithEXIF as Data
+        
+        PHPhotoLibrary.shared().performChanges({
+            let creationRequest = PHAssetCreationRequest.forAsset()
+            creationRequest.addResource(with: .photo, data: jpeg_data, options: nil)
+        }, completionHandler: { success, error in
+            if success {
+                print("Image saved successfully")
+            } else if let error = error {
+                print("Failed to save image: \(error.localizedDescription)")
+            }
+        })
+        
+        print("OK")
+    }
+    
     
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(
