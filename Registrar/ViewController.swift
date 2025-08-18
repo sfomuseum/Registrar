@@ -49,12 +49,19 @@ class ViewController: UIViewController {
     
     @IBAction func exportRecords(_ sender: UIButton){
         
+        self.progressView.startAnimating()
+        self.progressView.isHidden = false
+        
         let rsp = self.label.marshalJSON()
         var meta: String
         
         switch (rsp) {
-        case .failure(let err):
-            print(err)
+        case .failure(let error):
+            
+            self.progressView.stopAnimating()
+            self.progressView.isHidden = true
+            
+            self.showAlert(title: "Failed to export metadata", message: "Unable to export metadata because \(error)")
             return
         case .success(let data):
             
@@ -69,6 +76,12 @@ class ViewController: UIViewController {
             self.saveImage(image: im, meta: meta)
         }
         
+        // Note: The actual saving of images happens asynchronously
+        // so it's kind of hard to know when everything has actually
+        // been completed. I guess we could watch PHObjectChangeDetails,
+        // maybe?
+        self.progressView.stopAnimating()
+        self.progressView.isHidden = true
     }
     
     @IBAction func resetButton(_ sender: UIButton) {
@@ -132,8 +145,6 @@ class ViewController: UIViewController {
     }
     
     func processScannedText(text: String) {
-        
-        print("Scanned '\(text)'")
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
@@ -209,7 +220,7 @@ class ViewController: UIViewController {
         CGImageDestinationAddImageFromSource(destination, cgImgSource, 0, (mutable as CFDictionary))
         
         guard CGImageDestinationFinalize(destination) else {
-            print("CGSad")
+            self.showAlert(title: "Failed to prepare image for exporting", message: "Unable to prepare image for exporting.")
             return
         }
         
@@ -222,11 +233,10 @@ class ViewController: UIViewController {
             if success {
                 print("Image saved successfully")
             } else if let error = error {
+                self.showAlert(title: "Failed to save image", message: "Failed to save image: \(error)")
                 print("Failed to save image: \(error.localizedDescription)")
             }
         })
-        
-        print("OK")
     }
     
     
