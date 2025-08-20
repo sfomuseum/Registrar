@@ -8,9 +8,11 @@ This is an experimental iOS application for gathering exhibition object photos a
 
 The idea is to speed up data collection for use in generating embeddings or other ML-related products (LLMs) to allow causual in-terminal photos to be paired with the canonical record for that object using ML/AI techniques.
 
-The data collection piece _mostly_ works (as of August 2025). What that means is that photo capture, data scanning, list views, EXIF updates and saving photos to the device all work. The `FoundationModel` piece to convert the scanned data (text) in to structured data only sometimes works. When it doesn't work there are no errors triggered or reported but the on-device models are unable to derive any structured data.
+The data collection piece _mostly_ works (as of August 2025). What that means is that photo capture, data scanning (mostly), list views, EXIF updates and saving photos to the device all work. The `FoundationModel` piece to convert the scanned data (text) in to structured data only sometimes works. When it doesn't work there are no errors triggered or reported but the on-device models are unable to derive any structured data.
 
-Given that the `FoundationModel` model is still in beta it is unclear whether the problem is caused by resource contrainsts on the device (an 11" iPad mini), in the OS (iPad OS 26b6), in the model itself or some combination of all of the above.
+While the data scanning framework is generally stable I have observed that from time to time is will just stop returning text that it has scanned to the application using it.
+
+Given that iPadOS 26 and the `FoundationModel` model are still in beta it is unclear whether these problems are caused by resource contrainsts on the device (an 11" iPad mini), in the OS (iPad OS 26b6), in the model itself or some combination of all of the above.
 
 The same data and prompt (instructions) used to convert text data in to structured data seems to work fine using other models, for example `Ollama:devstral` or `llama.cpp:gpt-oss-20b-GGUF`.
 
