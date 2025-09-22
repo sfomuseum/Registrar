@@ -9,7 +9,7 @@ class ViewController: UIViewController {
     
     let instructions = """
         Parse this text as though it were a wall label in a museum describing an object.
-        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, Lfollowed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
+        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
     
     var label = WallLabel("")
@@ -211,7 +211,7 @@ class ViewController: UIViewController {
         let imageProperties = CGImageSourceCopyPropertiesAtIndex(cgImgSource, 0, nil)! as NSDictionary
         let mutable: NSMutableDictionary = imageProperties.mutableCopy() as! NSMutableDictionary
         
-        var EXIFDictionary: NSMutableDictionary = (mutable[kCGImagePropertyExifDictionary as String] as? NSMutableDictionary)!
+        let EXIFDictionary: NSMutableDictionary = (mutable[kCGImagePropertyExifDictionary as String] as? NSMutableDictionary)!
         
         EXIFDictionary[kCGImagePropertyExifUserComment as String] = meta
         
