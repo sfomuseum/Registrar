@@ -44,7 +44,7 @@ extension ViewController: UIContextMenuInteractionDelegate {
                 return nil
             }
             
-            guard let row = tv_interaction.row else {
+        guard tv_interaction.row != nil else {
                 return nil
             }
             

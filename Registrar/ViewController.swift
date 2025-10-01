@@ -5,6 +5,8 @@ import CoreLocation
 import FoundationModels
 import Photos
 
+import llama
+
 class ViewController: UIViewController {
     
     let instructions = """
