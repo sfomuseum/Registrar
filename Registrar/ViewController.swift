@@ -7,6 +7,7 @@ import Photos
 
 import llama
 
+
 class ViewController: UIViewController {
     
     let instructions = """
@@ -161,6 +162,14 @@ class ViewController: UIViewController {
                 
                 // This doesn't work yet because of concurrency issues
                 // let rsp = await label.Parse()
+                
+                let model_path = "foo"
+                let params = llama_model_params()
+                let model = llama_model_load_from_file(model_path, params)
+                
+                let ctx_params = llama_context_params()
+                let ctx = llama_init_from_model(model, ctx_params)
+                
                 
                 // Start of make this a WallLabel method
                 
