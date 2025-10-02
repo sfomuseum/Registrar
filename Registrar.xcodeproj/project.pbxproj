@@ -23,6 +23,19 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		4AC55DFE2E8F08D900FC5C7A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		4A5DF1382E4E6D90009976D6 /* Registrar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Registrar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A5DF14E2E4E6D91009976D6 /* RegistrarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RegistrarTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -39,11 +52,25 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		4AC55DFF2E8F08D900FC5C7A /* Exceptions for "Registrar" folder in "Embed Frameworks" phase from "Registrar" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			attributesByRelativePath = {
+				llama.framework = (CodeSignOnCopy, RemoveHeadersOnCopy, );
+			};
+			buildPhase = 4AC55DFE2E8F08D900FC5C7A /* Embed Frameworks */;
+			membershipExceptions = (
+				llama.framework,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4A5DF13A2E4E6D90009976D6 /* Registrar */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				4A5DF1602E4E6D91009976D6 /* Exceptions for "Registrar" folder in "Registrar" target */,
+				4AC55DFF2E8F08D900FC5C7A /* Exceptions for "Registrar" folder in "Embed Frameworks" phase from "Registrar" target */,
 			);
 			path = Registrar;
 			sourceTree = "<group>";
@@ -115,6 +142,7 @@
 				4A5DF1342E4E6D90009976D6 /* Sources */,
 				4A5DF1352E4E6D90009976D6 /* Frameworks */,
 				4A5DF1362E4E6D90009976D6 /* Resources */,
+				4AC55DFE2E8F08D900FC5C7A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

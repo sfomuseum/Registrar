@@ -163,7 +163,20 @@ class ViewController: UIViewController {
                 // This doesn't work yet because of concurrency issues
                 // let rsp = await label.Parse()
                 
-                let model_path = "foo"
+                guard let documentsURL = FileManager.default.urls(for: .documentDirectory,
+                                                                 in: .userDomainMask).first else {
+                    fatalError("Unable to locate Documents directory")
+                }
+
+                // This is way too big for an iOS device...
+                // let model_name = "ggml-org_gpt-oss-20b-GGUF_gpt-oss-20b-mxfp4.gguf"
+                let model_name = "ggml-org_SmolVLM-500M-Instruct-GGUF_SmolVLM-500M-Instruct-Q8_0.gguf"
+                
+                let model_url = documentsURL.appendingPathComponent(model_name)
+                let model_path = model_url.absoluteString.replacingOccurrences(of: "file://", with: "")
+                
+                print(model_path)
+                
                 let params = llama_model_params()
                 let model = llama_model_load_from_file(model_path, params)
                 
