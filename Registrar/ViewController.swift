@@ -177,11 +177,40 @@ class ViewController: UIViewController {
                 
                 print(model_path)
                 
-                let params = llama_model_params()
+                var params = llama_model_params()
+                params.n_gpu_layers = 0
+                
                 let model = llama_model_load_from_file(model_path, params)
                 
-                let ctx_params = llama_context_params()
+                var ctx_params = llama_context_params()
+                ctx_params.n_ctx = 512
+                ctx_params.n_batch = 8
+                ctx_params.n_threads = Int32(ProcessInfo.processInfo.activeProcessorCount)
+                
+                
                 let ctx = llama_init_from_model(model, ctx_params)
+                
+                let prompt = "Hello, world! "
+                let tokens = prompt.utf8.map { UInt8($0) }
+                
+                print("TOKENS")
+                print(tokens)
+                
+                // This fails with
+                // /usr/local/src/llama.cpp/src/llama-vocab.cpp:2783: GGML_ASSERT(tokenizer && "Tokenizer not initialized. Call llama_vocab::init_tokenizer() first.") failed
+                
+                var tokenIds = [llama_token](repeating: 0, count: tokens.count)
+                let nTokens = llama_tokenize(ctx, tokens, Int32(tokens.count), &tokenIds, Int32(tokens.count), false, false)
+                
+                print("NTOKENS")
+                print(nTokens)
+                
+                // let nPredict = 1     // predict the next single token
+                // let logits = llama_eval(ctx, tokenIds, nTokens, nPredict, ctx_params.n_batch)
+                         
+                // llama_free(ctx)
+                // llama_free(model)
+                
                 
                 
                 // Start of make this a WallLabel method
