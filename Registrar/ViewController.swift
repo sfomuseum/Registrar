@@ -11,8 +11,7 @@ import llama
 class ViewController: UIViewController {
     
     let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object.
-        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
+        Parse this text as though it were a wall label in a museum describing an object in to a JSON dictionary of descriptive key-value pairs. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. This is text in question:
         """
     
     var label = WallLabel("")
@@ -170,13 +169,22 @@ class ViewController: UIViewController {
                 
                 // This is way too big for an iOS device...
                 // let model_name = "ggml-org_gpt-oss-20b-GGUF_gpt-oss-20b-mxfp4.gguf"
+                
+                // This one is sort of okay?
                 let model_name = "ggml-org_SmolVLM-500M-Instruct-GGUF_SmolVLM-500M-Instruct-Q8_0.gguf"
+                
+                // This returns gibberish like this:
+                // ' - 1. - 2. - 3. - 4. - 5. - 6. - 7. - 8. - 9. - 10. - 11. - 12. - 13. - 14. - 15. - 16. - 17. - 18. - 19. - 20. - 21. - 22. - 23. - 24. - 25. - 26. - 27. - 28. - 29. - 30. - 31. - 32. - 33. - 34. - 35. - 36. - 37. - 38. - 39. - 40. - 41. - 42. - 43. - 44. - 45. - 46. - 47. - 48. - 49. - 50. - 51. - 52. - 53. - 54. - 55. - 56. - 57. -
+                // let model_name = "Qwen_Qwen3-1.7B-GGUF_Qwen3-1.7B-Q8_0.gguf"
                 
                 let model_url = documentsURL.appendingPathComponent(model_name)
                 let model_path = model_url.absoluteString.replacingOccurrences(of: "file://", with: "")
                 
-                let rsp = try await self.queryLlamaModel(modelPath: model_path, prompt: "What is the captial of France?")
-                print("WTF '\(rsp)'")
+                let model_prompt = self.instructions + text
+                print("PROMPT \(model_prompt)")
+                
+                let rsp = try await self.queryLlamaModel(modelPath: model_path, prompt: model_prompt)
+                print("RESPONSE '\(rsp)'")
                 
                 
                 // Start of make this a WallLabel method

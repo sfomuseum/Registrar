@@ -5,11 +5,11 @@ enum LlamaError: Error {
     case couldNotInitializeContext
 }
 
-func llama_batch_clear(_ batch: inout llama_batch) {
+nonisolated func llama_batch_clear(_ batch: inout llama_batch) {
     batch.n_tokens = 0
 }
 
-func llama_batch_add(_ batch: inout llama_batch, _ id: llama_token, _ pos: llama_pos, _ seq_ids: [llama_seq_id], _ logits: Bool) {
+nonisolated func llama_batch_add(_ batch: inout llama_batch, _ id: llama_token, _ pos: llama_pos, _ seq_ids: [llama_seq_id], _ logits: Bool) {
     batch.token   [Int(batch.n_tokens)] = id
     batch.pos     [Int(batch.n_tokens)] = pos
     batch.n_seq_id[Int(batch.n_tokens)] = Int32(seq_ids.count)
@@ -28,6 +28,9 @@ actor LlamaContext {
     private var sampling: UnsafeMutablePointer<llama_sampler>
     private var batch: llama_batch
     private var tokens_list: [llama_token]
+    // HACK: This seems to work until it doesn't I guess?
+    private var seen_tokens: [llama_token]
+
     var is_done: Bool = false
 
     /// This variable is used to store temporarily invalid cchars
@@ -42,6 +45,8 @@ actor LlamaContext {
         self.model = model
         self.context = context
         self.tokens_list = []
+        // HACK: This seems to work until it doesn't I guess?
+        self.seen_tokens = []
         self.batch = llama_batch_init(512, 0, 1)
         self.temporary_invalid_cchars = []
         let sparams = llama_sampler_chain_default_params()
@@ -77,6 +82,9 @@ actor LlamaContext {
         let n_threads = max(1, min(8, ProcessInfo.processInfo.processorCount - 2))
         print("Using \(n_threads) threads")
 
+        // > llama-server -hf ggml-org/gpt-oss-20b-GGUF --ctx-size 0 --jinja -ub 2048 -b 2048 -ngl 99 -fa
+        // Do I need to set equivalent parameters... ?
+        
         var ctx_params = llama_context_default_params()
         ctx_params.n_ctx = 2048
         ctx_params.n_threads       = Int32(n_threads)
@@ -138,6 +146,7 @@ actor LlamaContext {
 
         for i1 in 0..<tokens_list.count {
             let i = Int(i1)
+            print("ADD TOKEN \(tokens_list[i])")
             llama_batch_add(&batch, tokens_list[i], Int32(i), [0], false)
         }
         batch.logits[Int(batch.n_tokens) - 1] = 1 // true
@@ -151,13 +160,16 @@ actor LlamaContext {
 
     func completion_loop() -> String {
         var new_token_id: llama_token = 0
-
+        
         new_token_id = llama_sampler_sample(sampling, context, batch.n_tokens - 1)
         
-        let wtf = llama_vocab_is_eog(vocab, new_token_id)
-        print("LOOP \(n_len) current: \(n_cur) wtf: \(wtf)")
+        let is_eog = llama_vocab_is_eog(vocab, new_token_id)
+        print("LOOP \(n_len) current: \(n_cur) token: \(new_token_id) is eog: \(is_eog)")
+      
+        // HACK: This seems to work until it doesn't I guess?
+        // Specifically this: || seen_tokens.count == tokens_list.count
         
-        if llama_vocab_is_eog(vocab, new_token_id) || n_cur == n_len {
+        if llama_vocab_is_eog(vocab, new_token_id) || n_cur == n_len || seen_tokens.count == tokens_list.count {
             print("\n")
             is_done = true
             let new_token_str = String(cString: temporary_invalid_cchars + [0])
@@ -180,8 +192,12 @@ actor LlamaContext {
             new_token_str = ""
         }
         // print(new_token_str)
-        tokens_list.append(new_token_id)
+        // tokens_list.append(new_token_id)
+        
+        // HACK: This seems to work until it doesn't I guess?
+        seen_tokens.append(new_token_id)
 
+        
         llama_batch_clear(&batch)
         llama_batch_add(&batch, new_token_id, n_cur, [0], true)
 
