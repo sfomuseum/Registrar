@@ -8,8 +8,7 @@ import Photos
 class ViewController: UIViewController {
     
     let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object.
-        Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
+        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
     
     var label = WallLabel("")
@@ -46,6 +45,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var resetButton: UIBarButtonItem!
     
     @IBOutlet var exportButton: UIBarButtonItem!
+    
+    //MARK: Button actions/functions
     
     @IBAction func exportRecords(_ sender: UIButton){
         
@@ -144,6 +145,8 @@ class ViewController: UIViewController {
         
     }
     
+    //MARK: Text processing
+    
     func processScannedText(text: String) {
         
         self.progressView.isHidden = false
@@ -198,6 +201,8 @@ class ViewController: UIViewController {
         }
     }
     
+    //MARK: Image saving
+    
     func saveImage(image: UIImage, meta: String) {
         
         let imageData: Data = image.jpegData(compressionQuality: 1)!
@@ -239,6 +244,7 @@ class ViewController: UIViewController {
         })
     }
     
+    //MARK: Feedback and alerts
     
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(
