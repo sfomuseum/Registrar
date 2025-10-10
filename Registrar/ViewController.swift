@@ -7,47 +7,61 @@ import Photos
 
 class ViewController: UIViewController {
     
+    /// The instructions/guardrails for the LLM prompt
     let instructions = """
         Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
         """
     
+    /// The current WallLabel instance
     var label = WallLabel("")
     
+    /// The list of images captured (and stored to collectionView)
     var images = [UIImage](){
         willSet(i){
             // print("Update images \(i.count)")
         }
     }
     
+    /// The cell reuse identifier for the image list
     let cellReuseIdentifier = "cell"
     
+    /// CLLocationManager instsance for geolocation
     let locationManager = CLLocationManager()
     
+    /// The most recent reported location CLLocationManager
     var current_location: CLLocation?
     
     var keyValuePairs: [(String, String)] = []
     
+    /// Boolean value indicating whether data scanner functionality is supported
     var isDataScannerAvailable: Bool {
         DataScannerViewController.isAvailable &&
         DataScannerViewController.isSupported
     }
     
+    /// The button that triggers the photo capture dialog
     @IBOutlet var captureButton: UIBarButtonItem!
     
+    /// The butten that triggers the data scanning modal dialog
     @IBOutlet var scanButton: UIBarButtonItem!
     
+    /// The UITableView where wall label data is displayed
     @IBOutlet weak var tableView: UITableView!
     
+    /// The UICollectionView where captured images are displayed
     @IBOutlet weak var collectionView: UICollectionView!
     
     @IBOutlet weak var progressView: UIActivityIndicatorView!
     
+    /// The button which purges image and captured wall label data
     @IBOutlet weak var resetButton: UIBarButtonItem!
     
+    /// The button which will trigger the function to write wall label data to each photos' EXIF data before exporting the photo to device's Photo application
     @IBOutlet var exportButton: UIBarButtonItem!
     
     //MARK: Button actions/functions
     
+    /// Encode wall label data as JSON and write to each photos' EXIF data before exporting the photo to device's Photo library
     @IBAction func exportRecords(_ sender: UIButton){
         
         self.progressView.startAnimating()
@@ -85,6 +99,7 @@ class ViewController: UIViewController {
         self.progressView.isHidden = true
     }
     
+    /// Purges all images and captured wall label data and their corresponding display views
     @IBAction func resetButton(_ sender: UIButton) {
         
         let alertController = UIAlertController(title: "Confirm Action", message: "Are you sure you want to reset everything?", preferredStyle: .alert)
@@ -103,6 +118,7 @@ class ViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    /// Trigger the camera capture modal dialog
     @IBAction func captureButton(_ sender: UIButton) {
         
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -116,6 +132,7 @@ class ViewController: UIViewController {
         }
     }
     
+    /// Trigger the data scanning modal dialog
     @IBAction func scanButton(_ sender: UIButton){
         
         guard isDataScannerAvailable else {
@@ -124,6 +141,8 @@ class ViewController: UIViewController {
         
         self.configureDataScanner()
     }
+    
+    //MARK: On load
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,11 +161,11 @@ class ViewController: UIViewController {
         
         self.collectionView.dataSource = self
         self.progressView.isHidden = true
-        
     }
     
     //MARK: Text processing
     
+    /// Process text scanned by the data scanner modal dialog using the on-device FoundationModel framework.
     func processScannedText(text: String) {
         
         self.progressView.isHidden = false
@@ -203,6 +222,7 @@ class ViewController: UIViewController {
     
     //MARK: Image saving
     
+    /// Write metadata to an image's "UserComment" EXIF header and then export the photo the device's Photo library.
     func saveImage(image: UIImage, meta: String) {
         
         let imageData: Data = image.jpegData(compressionQuality: 1)!
@@ -246,6 +266,7 @@ class ViewController: UIViewController {
     
     //MARK: Feedback and alerts
     
+    /// Display a model alert dialog
     func showAlert(title: String, message: String) {
         let alert = UIAlertController(
             title: title,

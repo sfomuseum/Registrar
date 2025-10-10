@@ -1,38 +1,50 @@
 import FoundationModels
 import Foundation
 
+/// WallLabel is a struct describing structured wall label data and geolocation data for an image of an object.
 @Generable(description: "Metadata properties for a wall label depicting a museum object")
 struct WallLabel: Codable {
+    /// The title of the object
     @Guide(description: "The title or name of the object. Sometimes titles may have leading numbers, followed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.")
     var title: String?
 
-    @Guide(description: "The year that an object was created")
+    /// The date attributed to an object, typically when that object was created
+    @Guide(description: "The date attributed to an object, typically when that object was created")
     var date: String?
 
+    /// The individual or organization responsible for creating an object.
     @Guide(description: "The individual or organization responsible for creating an object.")
     var creator: String?
     
+    /// The name of an individual, persons or organization who donated or are lending an object.
     @Guide(description: "The name of an individual, persons or organization who donated or are lending an object.")
     var creditline: String?
     
+    /// The location that an object was produced in.
     @Guide(description: "The location that an object was produced in.")
     var location: String?
     
+    /// The medium or media used to create the object.
     @Guide(description: "The medium or media used to create the object.")
     var medium: String?
     
+    /// The unique identifier for an object.
     @Guide(description: "The unique identifier for an object.")
     var accession_number: String?
     
+    /// The Unix timestamp when a photo of an object was captured.
     @Guide(description: "Ignore this property")
     var timestamp: Int?
     
+    /// The latitude location coordinate of the camera capturing a photo of an object.
     @Guide(description: "Ignore this property")
     var latitude: Float64?
     
+    /// The longitude location coordinate of the camera capturing a photo of an object.
     @Guide(description: "Ignore this property")
     var longitude: Float64?
     
+    /// The raw text of a wall label that was parsed in to a WallLabel struct
     @Guide(description: "Ignore this property")
     var input: String
     
@@ -73,6 +85,7 @@ struct WallLabel: Codable {
     }
     */
     
+    /// Return the ordered list of keys  to display in a UITableView.
     public func displayKeys() -> [String] {
         
         let keys: [String] = [
@@ -91,9 +104,9 @@ struct WallLabel: Codable {
         return keys
     }
     
+    /// Function to update (or not) a given property
     public mutating func setProperty(key: String, value: Any) -> Bool {
         
-
             switch(key) {
             case "title":
                 self.title = "\(value)"
@@ -125,6 +138,7 @@ struct WallLabel: Codable {
         
     }
     
+    /// Boolean method signaling whether a given key's value may be edited.
     public func isKeyEditable(key: String) -> Bool {
         
         switch (key) {
@@ -135,6 +149,7 @@ struct WallLabel: Codable {
         }
     }
     
+    /// Encode the WallLabel instance as JSON.
     public func marshalJSON() -> Result<Data, Error> {
         
         let encoder = JSONEncoder()
