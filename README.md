@@ -10,9 +10,7 @@ The idea is to speed up data collection for use in generating embeddings or othe
 
 The data collection piece _mostly_ works (as of August 2025). What that means is that photo capture, data scanning (mostly), list views, EXIF updates and saving photos to the device all work. The `FoundationModel` piece to convert the scanned data (text) in to structured data only sometimes works. When it doesn't work there are no errors triggered or reported but the on-device models are unable to derive any structured data.
 
-While the data scanning framework is generally stable I have observed that from time to time is will just stop returning text that it has scanned to the application using it.
-
-Given that iPadOS 26 and the `FoundationModel` model are still in beta it is unclear whether these problems are caused by resource contrainsts on the device (an 11" iPad mini), in the OS (iPad OS 26b6), in the model itself or some combination of all of the above.
+While the data scanning framework is generally stable I have observed that from time to time is will just stop returning text that it has scanned to the application using it.  Processing scanned data on an recent (2023-ish) iPad mini takes a noticeable amount of time, usually measured in seconds.
 
 The same data and prompt (instructions) used to convert text data in to structured data seems to work fine using other models, for example `Ollama:devstral` or `llama.cpp:gpt-oss-20b-GGUF`. For example (using `llama.cpp:gpt-oss-20b-GGUF`):
 
@@ -46,13 +44,30 @@ L2023.1401.072-.076"
 }
 ```
 
-That is the state of things as of this writing. Possible next steps include:
+## llama.cpp
 
-* Simply waiting for iPadOS26 is released and seeing if that fixes the problem (whatever "the problem" is...)
-* Getting feedback from someone at Apple (unlikely)
-* Trying to build the application using the [llama.cpp XCFramework](https://github.com/ggml-org/llama.cpp?tab=readme-ov-file#xcframework) which feels like it might become an exercise in "yak-shaving"...
+There is a separate `llama-cpp` branch with code to use the [llama.cpp XCFramework Swift bindings](https://github.com/ggml-org/llama.cpp?tab=readme-ov-file#xcframework) with an on-device llama.cpp-compatible model copied to the application's Documents folder.
 
-Depending on how the pipeline for generating ML embeddings and other related byproducts is structured it may be enough to remove, or disable, the on-device ML and simply derive structured data in a separate server-side piece after the imagery has been collected. This remains to be determined. 
+This work compiles and accepts (canned) prompts but, as of this writing, returns gibberish. I suspect this is because I am "doing it wrong" but I have yet to untangle how the llama.cpp code needs to be structured. When the goal is, when using the same model run behind the `llama-server` tool (for example: `Qwen_Qwen3-1.7B-GGUF_Qwen3-1.7B-Q8_0.gguf`), to produce output like this:
+
+```
+Parse this text as though it were a wall label in a museum describing an object in to a JSON dictionary of descriptive key-value pairs. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. This is text in question: Virgin America flight attendant uniform 2007
+cotton, polyester, plastic, wool, metal
+Collection of SFO Museum Gift of Sirena Lam
+Belt: gift of Lisa Larsen
+2018.071.017, 2019.032.012, 013, 015, 019
+L2023.1401.072-.076
+
+{
+"name": "Virgin America flight attendant uniform",
+"date": "2007",
+"creator": "",
+"location": "Collection of SFO Museum Gift of Sirena Lam",
+"media": "cotton, polyester, plastic, wool, metal",
+"creditline": "Collection of SFO Museum Gift of Sirena Lam",
+"accession numbers": ["2018.071.017", "2019.032.012", "013", "015", "019", "L2023.1401.072-.076"]
+}
+```
 
 ## See also
 
