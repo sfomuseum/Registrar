@@ -8,11 +8,11 @@ This is an experimental iOS application for gathering exhibition object photos a
 
 The idea is to speed up data collection for use in generating embeddings or other ML-related products (LLMs) to allow causual in-terminal photos to be paired with the canonical record for that object using ML/AI techniques.
 
-The data collection piece _mostly_ works (as of August 2025). What that means is that photo capture, data scanning (mostly), list views, EXIF updates and saving photos to the device all work. The `FoundationModel` piece to convert the scanned data (text) in to structured data only sometimes works. When it doesn't work there are no errors triggered or reported but the on-device models are unable to derive any structured data.
+The data collection piece _mostly_ works. What that means is that photo capture, data scanning (mostly), list views, EXIF updates and saving photos to the device all work. The `FoundationModel` piece to convert the scanned data (text) in to structured data only sometimes works. When it doesn't work there are no errors triggered or reported but the on-device models are unable to derive any structured data.
 
 While the data scanning framework is generally stable I have observed that from time to time is will just stop returning text that it has scanned to the application using it.  Processing scanned data on an recent (2023-ish) iPad mini takes a noticeable amount of time, usually measured in seconds.
 
-The same data and prompt (instructions) used to convert text data in to structured data seems to work fine using other models, for example `Ollama:devstral` or `llama.cpp:gpt-oss-20b-GGUF`. For example (using `llama.cpp:gpt-oss-20b-GGUF`):
+Maybe better results could be optained by using a [FoundationModel adapter](https://developer.apple.com/apple-intelligence/foundation-models-adapter/) but the same data and prompt (instructions) used to convert text data in to structured data seems to work fine using other models, like `Ollama:devstral` or `llama.cpp:gpt-oss-20b-GGUF`. For example (using `llama.cpp:gpt-oss-20b-GGUF`):
 
 ```
 Parse the following text as though it were a museum wall label in to unique key value pairs denoting the properties of the wall label, such as: title, date, location, creator, medium, accession number. Keep in mind that their may be other properties as well. Here is the text in question: "Virgin America flight attendant uniform 2007
@@ -44,6 +44,8 @@ L2023.1401.072-.076"
 }
 ```
 
+_This also works with smaller models like `Qwen_Qwen3-1.7B-GGUF_Qwen3-1.7B-Q8_0.gguf` (described below)._
+
 ## llama.cpp
 
 There is a separate `llama-cpp` branch with code to use the [llama.cpp XCFramework Swift bindings](https://github.com/ggml-org/llama.cpp?tab=readme-ov-file#xcframework) with an on-device llama.cpp-compatible model copied to the application's Documents folder.
@@ -69,6 +71,13 @@ L2023.1401.072-.076
 }
 ```
 
-## See also
+## Related
 
 * [sfomuseum/go-registrar](https://github.com/sfomuseum/go-registrar) - Tools for extracting data written to the `UserComment` EXIF tag in photos exported by the `Registrar` application.
+
+## See also
+
+* https://developer.apple.com/documentation/technologyoverviews/foundation-models/
+* https://developer.apple.com/documentation/visionkit/datascannerviewcontroller
+* https://developer.apple.com/documentation/photokit
+* https://developer.apple.com/documentation/corelocation/
