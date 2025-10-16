@@ -1,5 +1,7 @@
 # Registrar
 
+![](docs/images/registrar-t2-crop-sm.png)
+
 Experimental iOS application for gathering exhibition object photos and wall label data and embedding the latter in the `UserComment` EXIF tag of the former.
 
 ## Motivation
