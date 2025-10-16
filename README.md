@@ -4,6 +4,10 @@
 
 Experimental iOS application for gathering exhibition object photos and wall label data and embedding the latter in the `UserComment` EXIF tag of the former.
 
+## Background
+
+[Registrar – Experiments with Apple's on-device machine-learning frameworks](https://millsfield.sfomuseum.org/blog/2025/10/16/registrar/)
+
 ## Motivation
 
 This is an experimental iOS application for gathering exhibition object photos and wall label data and embedding the latter in the `UserComment` EXIF tag of the former. The idea is to use the `DataScanner` and `FoundationModel` frameworks to scan and then convert camera-imagery of wall label text in to structured data (embedding it in one or more photos).
