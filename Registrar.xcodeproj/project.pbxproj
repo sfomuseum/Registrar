@@ -6,6 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4AF97A272EA1AD3D0020E773 /* MLX in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A262EA1AD3D0020E773 /* MLX */; };
+		4AF97A292EA1AD3D0020E773 /* MLXFFT in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A282EA1AD3D0020E773 /* MLXFFT */; };
+		4AF97A2B2EA1AD3D0020E773 /* MLXFast in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A2A2EA1AD3D0020E773 /* MLXFast */; };
+		4AF97A2D2EA1AD3D0020E773 /* MLXLinalg in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A2C2EA1AD3D0020E773 /* MLXLinalg */; };
+		4AF97A2F2EA1AD3D0020E773 /* MLXNN in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A2E2EA1AD3D0020E773 /* MLXNN */; };
+		4AF97A322EA1B1640020E773 /* MLXEmbedders in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A312EA1B1640020E773 /* MLXEmbedders */; };
+		4AF97A342EA1B1640020E773 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A332EA1B1640020E773 /* MLXLLM */; };
+		4AF97A362EA1B1640020E773 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A352EA1B1640020E773 /* MLXLMCommon */; };
+		4AF97A382EA1B1640020E773 /* MLXMNIST in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A372EA1B1640020E773 /* MLXMNIST */; };
+		4AF97A3A2EA1B1640020E773 /* MLXVLM in Frameworks */ = {isa = PBXBuildFile; productRef = 4AF97A392EA1B1640020E773 /* MLXVLM */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4A5DF14F2E4E6D91009976D6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +78,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4AF97A2F2EA1AD3D0020E773 /* MLXNN in Frameworks */,
+				4AF97A2D2EA1AD3D0020E773 /* MLXLinalg in Frameworks */,
+				4AF97A272EA1AD3D0020E773 /* MLX in Frameworks */,
+				4AF97A3A2EA1B1640020E773 /* MLXVLM in Frameworks */,
+				4AF97A322EA1B1640020E773 /* MLXEmbedders in Frameworks */,
+				4AF97A362EA1B1640020E773 /* MLXLMCommon in Frameworks */,
+				4AF97A342EA1B1640020E773 /* MLXLLM in Frameworks */,
+				4AF97A382EA1B1640020E773 /* MLXMNIST in Frameworks */,
+				4AF97A2B2EA1AD3D0020E773 /* MLXFast in Frameworks */,
+				4AF97A292EA1AD3D0020E773 /* MLXFFT in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +148,16 @@
 			);
 			name = Registrar;
 			packageProductDependencies = (
+				4AF97A262EA1AD3D0020E773 /* MLX */,
+				4AF97A282EA1AD3D0020E773 /* MLXFFT */,
+				4AF97A2A2EA1AD3D0020E773 /* MLXFast */,
+				4AF97A2C2EA1AD3D0020E773 /* MLXLinalg */,
+				4AF97A2E2EA1AD3D0020E773 /* MLXNN */,
+				4AF97A312EA1B1640020E773 /* MLXEmbedders */,
+				4AF97A332EA1B1640020E773 /* MLXLLM */,
+				4AF97A352EA1B1640020E773 /* MLXLMCommon */,
+				4AF97A372EA1B1640020E773 /* MLXMNIST */,
+				4AF97A392EA1B1640020E773 /* MLXVLM */,
 			);
 			productName = Registrar;
 			productReference = 4A5DF1382E4E6D90009976D6 /* Registrar.app */;
@@ -208,6 +241,10 @@
 			);
 			mainGroup = 4A5DF12F2E4E6D90009976D6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */,
+				4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4A5DF1392E4E6D90009976D6 /* Products */;
 			projectDirPath = "";
@@ -290,6 +327,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = JB8GZN32RY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Registrar",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Registrar/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow the application to take pictures";
@@ -325,6 +366,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = JB8GZN32RY;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Registrar",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Registrar/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "Allow the application to take pictures";
@@ -597,6 +642,78 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.29.1;
+			};
+		};
+		4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.29.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4AF97A262EA1AD3D0020E773 /* MLX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLX;
+		};
+		4AF97A282EA1AD3D0020E773 /* MLXFFT */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFFT;
+		};
+		4AF97A2A2EA1AD3D0020E773 /* MLXFast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXFast;
+		};
+		4AF97A2C2EA1AD3D0020E773 /* MLXLinalg */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXLinalg;
+		};
+		4AF97A2E2EA1AD3D0020E773 /* MLXNN */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A252EA1AD3D0020E773 /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXNN;
+		};
+		4AF97A312EA1B1640020E773 /* MLXEmbedders */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXEmbedders;
+		};
+		4AF97A332EA1B1640020E773 /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
+		};
+		4AF97A352EA1B1640020E773 /* MLXLMCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLMCommon;
+		};
+		4AF97A372EA1B1640020E773 /* MLXMNIST */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXMNIST;
+		};
+		4AF97A392EA1B1640020E773 /* MLXVLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4AF97A302EA1B1640020E773 /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXVLM;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4A5DF1302E4E6D90009976D6 /* Project object */;
 }

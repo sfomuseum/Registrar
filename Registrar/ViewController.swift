@@ -5,6 +5,13 @@ import CoreLocation
 import FoundationModels
 import Photos
 
+// This is as far as I've gotten trying to wire in MLX stuff
+// https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
+import MLX
+import MLXLLM
+import MLXLMCommon
+import MLXVLM
+
 class ViewController: UIViewController {
     
     /// The instructions/guardrails for the LLM prompt
@@ -175,6 +182,9 @@ class ViewController: UIViewController {
         label.timestamp = Int(NSDate().timeIntervalSince1970)
         label.latitude = self.current_location?.coordinate.latitude ?? 0.0
         label.longitude = self.current_location?.coordinate.longitude ?? 0.0
+        
+        // Something something something MLX
+        // https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
         
         Task {
             do {
