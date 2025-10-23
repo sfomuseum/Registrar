@@ -248,6 +248,9 @@ class ViewController: UIViewController {
                         }
                     }
                 }
+                
+                print("DONE \(String(describing: messages.last?.content))")
+                
             } catch {
                 
                 DispatchQueue.main.async {
