@@ -186,6 +186,80 @@ class ViewController: UIViewController {
         // Something something something MLX
         // https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
         
+        let mlxService = MLXService()
+        var selectedModel: LMModel = MLXService.availableModels.first!
+   
+        var prompt: String = instructions + text
+        
+        print("PROMPT \(prompt)")
+        print("MODEL \(selectedModel)")
+        
+        var messages: [Message] = [
+            .system("You are a helpful assistant!")
+        ]
+        
+        messages.append(.user(prompt))
+        messages.append(.assistant(""))
+
+        // Clear the input after sending
+        // clear(.prompt)
+
+        var generateTask: Task<Void, any Error>?
+        
+        generateTask = Task {
+            // Process generation chunks and update UI
+            
+            print("WHITRRRR")
+            
+            for await generation in try await mlxService.generate(
+                messages: messages, model: selectedModel)
+            {
+                switch generation {
+                case .chunk(let chunk):
+                    print("CHUNK \(chunk)")
+                    // Append new text to the current assistant message
+                    if let assistantMessage = messages.last {
+                        assistantMessage.content += chunk
+                    }
+                case .info(let info):
+                    // Update performance metrics
+                    //generateCompletionInfo = info
+                    print("INFO \(info)")
+                case .toolCall(let call):
+                    print("TOOL \(call)")
+                    break
+                }
+            }
+        }
+
+        Task {
+            
+            do {
+                // Handle task completion and cancellation
+                try await withTaskCancellationHandler {
+                    try await generateTask?.value
+                } onCancel: {
+                    Task { @MainActor in
+                        generateTask?.cancel()
+                        
+                        // Mark message as cancelled
+                        if let assistantMessage = messages.last {
+                            assistantMessage.content += "\n[Cancelled]"
+                        }
+                    }
+                }
+            } catch {
+                
+                DispatchQueue.main.async {
+                    self.progressView.stopAnimating()
+                    self.progressView.isHidden = true
+                }
+                
+                self.showAlert(title: "Failed to parse text", message: "Failed to parse text \(error)")
+            }
+        }
+        
+        /*
         Task {
             do {
                 
@@ -228,6 +302,8 @@ class ViewController: UIViewController {
             }
             
         }
+         */
+        
     }
     
     //MARK: Image saving
