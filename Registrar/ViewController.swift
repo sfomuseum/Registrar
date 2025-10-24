@@ -11,7 +11,8 @@ import WallLabel
 class ViewController: UIViewController {
 
     let parser_uri = "mlx://?model=llama3.2:1b"
-
+    // let parser_uri = "foundation://"
+    
     /// The current WallLabel instance
     var label: WallLabel?
     
@@ -22,7 +23,8 @@ class ViewController: UIViewController {
         }
     }
     
-    let logger = Logger(label: "org.sfomuseum.registar")
+    var logger: Logger!
+
     
     /// The cell reuse identifier for the image list
     let cellReuseIdentifier = "cell"
@@ -155,6 +157,9 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.logger = Logger(label: "org.sfomuseum.registar")
+        self.logger.logLevel = .debug
+        
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -179,6 +184,8 @@ class ViewController: UIViewController {
         self.progressView.isHidden = false
         self.progressView.startAnimating()
          
+        self.logger.debug("Process text '\(text)'")
+        
         Task {
             do {
                 
@@ -187,6 +194,7 @@ class ViewController: UIViewController {
                 do {
                     label_parser = try NewParser(self.parser_uri, logger: self.logger)
                 } catch {
+                    logger.error("Failed to create new parser, \(error)")
                     throw error
                 }
                 
@@ -195,6 +203,7 @@ class ViewController: UIViewController {
                 switch parse_rsp {
                 case .success(let label_rsp):
                     
+                    logger.debug("Successfully parsed label text")
                     label = label_rsp
 
                     DispatchQueue.main.async {
@@ -204,12 +213,10 @@ class ViewController: UIViewController {
                         self.updateTableData(label: self.label!)
                     }
                     
-                case .failure(let err):
-                    throw err
+                case .failure(let error):
+                    logger.error("Failed to parse label, \(error)")
+                    throw error
                 }
-                                
-                // End of make this a WallLabel method
-
                 
             } catch {
                 DispatchQueue.main.async {
