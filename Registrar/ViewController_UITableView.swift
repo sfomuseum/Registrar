@@ -1,4 +1,5 @@
 import UIKit
+import WallLabel
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
@@ -52,7 +53,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         var newKeyValuePairs: [(String, String)] = []
         
-        for key in label.displayKeys() {
+        for key in displayKeys() {
             
             if !dict.keys.contains(key){
                 continue

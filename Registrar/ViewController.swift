@@ -5,46 +5,14 @@ import CoreLocation
 import FoundationModels
 import Photos
 
-
+import Logging
 import WallLabel
-
-/*
- 
- struct WallLabel: Codable {
-     /// The title of the object
-     @Guide(description: "The title or name of the object. Sometimes titles may have leading numbers, followed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.")
-     var title: String?
-
-     /// The date attributed to an object, typically when that object was created
-     @Guide(description: "The date attributed to an object, typically when that object was created")
-     var date: String?
-
-     /// The individual or organization responsible for creating an object.
-     @Guide(description: "The individual or organization responsible for creating an object.")
-     var creator: String?
-     
-     /// The name of an individual, persons or organization who donated or are lending an object.
-     @Guide(description: "The name of an individual, persons or organization who donated or are lending an object.")
-     var creditline: String?
-     
-     /// The location that an object was produced in.
-     @Guide(description: "The location that an object was produced in.")
-     var location: String?
-     
-     /// The medium or media used to create the object.
-     @Guide(description: "The medium or media used to create the object.")
-     var medium: String?
-     
-     /// The unique identifier for an object.
-     @Guide(description: "The unique identifier for an object.")
-     var accession_number: String?
- */
 
 class ViewController: UIViewController {
     
 
     /// The current WallLabel instance
-    var label = WallLabel("")
+    var label: WallLabel?
     
     /// The list of images captured (and stored to collectionView)
     var images = [UIImage](){
@@ -52,6 +20,8 @@ class ViewController: UIViewController {
             // print("Update images \(i.count)")
         }
     }
+    
+    let logger = Logger(label: "org.sfomuseum.registar")
     
     /// The cell reuse identifier for the image list
     let cellReuseIdentifier = "cell"
@@ -98,7 +68,7 @@ class ViewController: UIViewController {
         self.progressView.startAnimating()
         self.progressView.isHidden = false
         
-        let rsp = self.label.marshalJSON()
+        let rsp = self.label?.marshalJSON()
         var meta: String
         
         switch (rsp) {
@@ -116,6 +86,12 @@ class ViewController: UIViewController {
             }
             
             meta = str_data
+        default:
+            self.progressView.stopAnimating()
+            self.progressView.isHidden = true
+            
+            self.showAlert(title: "Failed to export metadata", message: "Unable to marshal metadata to export")
+            return
         }
         
         for im in images {
@@ -207,16 +183,10 @@ class ViewController: UIViewController {
         Task {
             do {
                 
-                var logger = Logger(label: "org.sfomuseum.wall-label")
-
-                if verbose {
-                    logger.logLevel = .debug
-                }
-                
                 var label_parser: Parser
                 
                 do {
-                    label_parser = try NewParser(parser_uri, logger: logger)
+                    label_parser = try NewParser(parser_uri, logger: self.logger)
                 } catch {
                     throw error
                 }
