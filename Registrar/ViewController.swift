@@ -10,9 +10,9 @@ import WallLabel
 
 class ViewController: UIViewController {
 
-    let parser_uri = "mlx://?model=llama3.2:1b"
-    // let parser_uri = "foundation://"
-    
+    // mlx://?model=llama3.2:1b
+    var parser_uri: String = "foundation://"
+        
     /// The current WallLabel instance
     var label: WallLabel?
     
@@ -25,7 +25,6 @@ class ViewController: UIViewController {
     
     var logger: Logger!
 
-    
     /// The cell reuse identifier for the image list
     let cellReuseIdentifier = "cell"
     
@@ -159,6 +158,15 @@ class ViewController: UIViewController {
         
         self.logger = Logger(label: "org.sfomuseum.registar")
         self.logger.logLevel = .debug
+        
+        let settings = UserDefaults.standard
+        settings.synchronize()
+        
+        let p_uri = settings.string(forKey: "WallLabalParserURI")
+        
+        if p_uri != nil {
+            parser_uri = p_uri!
+        }
         
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
