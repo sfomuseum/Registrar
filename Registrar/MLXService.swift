@@ -105,6 +105,8 @@ class MLXService {
             let images: [UserInput.Image] = message.images.map { imageURL in .url(imageURL) }
             let videos: [UserInput.Video] = message.videos.map { videoURL in .url(videoURL) }
 
+            print("CHAT role: \(role) content: \(message.content)")
+            
             return Chat.Message(
                 role: role, content: message.content, images: images, videos: videos)
         }

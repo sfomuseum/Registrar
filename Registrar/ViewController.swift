@@ -16,7 +16,7 @@ class ViewController: UIViewController {
     
     /// The instructions/guardrails for the LLM prompt
     let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
+        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. Generate the result as a JSON-encoded dictionary of key-value pairs.
         """
     
     /// The current WallLabel instance
@@ -185,11 +185,12 @@ class ViewController: UIViewController {
         
         // Something something something MLX
         // https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
+        // https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md
         
         let mlxService = MLXService()
         var selectedModel: LMModel = MLXService.availableModels.first!
    
-        var prompt: String = instructions + text
+        var prompt: String = instructions + " The text to parse is: " + text
         
         print("PROMPT \(prompt)")
         print("MODEL \(selectedModel)")
@@ -205,9 +206,12 @@ class ViewController: UIViewController {
         // clear(.prompt)
 
         var generateTask: Task<Void, any Error>?
-        
+   
+        var result: String = ""
+
         generateTask = Task {
             // Process generation chunks and update UI
+            
             
             print("WHITRRRR")
             
@@ -216,11 +220,14 @@ class ViewController: UIViewController {
             {
                 switch generation {
                 case .chunk(let chunk):
-                    print("CHUNK \(chunk)")
+                    // print("CHUNK \(chunk)")
                     // Append new text to the current assistant message
                     if let assistantMessage = messages.last {
                         assistantMessage.content += chunk
                     }
+                    
+                    result += chunk
+                    
                 case .info(let info):
                     // Update performance metrics
                     //generateCompletionInfo = info
@@ -237,7 +244,9 @@ class ViewController: UIViewController {
             do {
                 // Handle task completion and cancellation
                 try await withTaskCancellationHandler {
+                    print("WOO")
                     try await generateTask?.value
+                    print("POO")
                 } onCancel: {
                     Task { @MainActor in
                         generateTask?.cancel()
@@ -249,7 +258,7 @@ class ViewController: UIViewController {
                     }
                 }
                 
-                print("DONE \(String(describing: messages.last?.content))")
+                print("DONE \(result)")
                 
             } catch {
                 
