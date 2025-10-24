@@ -1,4 +1,5 @@
 import UIKit
+import WallLabel
 
 extension ViewController: UIContextMenuInteractionDelegate {
     
@@ -75,12 +76,12 @@ extension ViewController: UIContextMenuInteractionDelegate {
                             return
                         }
                             
-                        if !this.label.setProperty(key: key, value: newValue){
+                        if !this.label!.setProperty(key: key, value: newValue){
                             this.showAlert(title: "Unable to update \(key)", message: "There was a problem updating the value of \(key)")
                             return
                         }
                         
-                        this.updateTableData(label: this.label)
+                        this.updateTableData(label: this.label!)
                     }
                 }
 

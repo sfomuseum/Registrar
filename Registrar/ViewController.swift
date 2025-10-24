@@ -9,7 +9,8 @@ import Logging
 import WallLabel
 
 class ViewController: UIViewController {
-    
+
+    let parser_uri = "mlx://?model=llama3.2:1b"
 
     /// The current WallLabel instance
     var label: WallLabel?
@@ -177,16 +178,14 @@ class ViewController: UIViewController {
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
- 
-        let parser_uri = "mlx://?model=llama3.2:1b"
-        
+         
         Task {
             do {
                 
                 var label_parser: Parser
                 
                 do {
-                    label_parser = try NewParser(parser_uri, logger: self.logger)
+                    label_parser = try NewParser(self.parser_uri, logger: self.logger)
                 } catch {
                     throw error
                 }
@@ -202,7 +201,7 @@ class ViewController: UIViewController {
                         
                         self.progressView.stopAnimating()
                         self.progressView.isHidden = true
-                        self.updateTableData(label: self.label)
+                        self.updateTableData(label: self.label!)
                     }
                     
                 case .failure(let err):
