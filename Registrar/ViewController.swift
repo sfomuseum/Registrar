@@ -5,12 +5,8 @@ import CoreLocation
 import FoundationModels
 import Photos
 
-// This is as far as I've gotten trying to wire in MLX stuff
-// https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
-import MLX
-import MLXLLM
-import MLXLMCommon
-import MLXVLM
+
+import WallLabel
 
 /*
  
@@ -46,11 +42,7 @@ import MLXVLM
 
 class ViewController: UIViewController {
     
-    /// The instructions/guardrails for the LLM prompt
-    let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, credit line and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. Generate the result as a JSON-encoded dictionary of key-value pairs, storing all values as strings. Assign the object title the key "title". Assign the object date the key "date". Assign the object creator (artist, manufacturer or company) a "creator" key. Assign the object credit line a "creditline" key. Assign the object location a "location" key. Assign the object media a "medium" key. Assign the accession number (primary identifier) an "accession_number" key. Assign an empty "input" key. Ensure that all keys (title, date, creator, creditline, location, medium, accession_number, input) are present and assigned empty string values if they can not be derived from the source text. Do not assign any besides: title, date, creator, creditline, location, medium, accession_number, input.
-        """
-    
+
     /// The current WallLabel instance
     var label = WallLabel("")
     
@@ -209,124 +201,46 @@ class ViewController: UIViewController {
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
+ 
+        let parser_uri = "mlx://?model=llama3.2:1b"
         
-        label = WallLabel(text)
-        label.timestamp = Int(NSDate().timeIntervalSince1970)
-        label.latitude = self.current_location?.coordinate.latitude ?? 0.0
-        label.longitude = self.current_location?.coordinate.longitude ?? 0.0
-        
-        // Something something something MLX
-        // https://github.com/ml-explore/mlx-swift-examples/blob/main/Applications/MLXChatExample/README.md
-        // https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md
-        
-        let mlxService = MLXService()
-        let selectedModel: LMModel = MLXService.availableModels.first!
-   
-        let prompt: String = instructions + " The text to parse is: " + text
-        var result: String = ""
-        var generateTask: Task<Void, any Error>?
-
-        // print("PROMPT \(prompt)")
-        // print("MODEL \(selectedModel)")
-        
-        var messages: [Message] = [
-            .system("You are a helpful assistant!")
-        ]
-        
-        messages.append(.user(prompt))
-        messages.append(.assistant(""))
-
-        generateTask = Task {
-
-            print("START...")
-            
-            for await generation in try await mlxService.generate(
-                messages: messages, model: selectedModel)
-            {
-                switch generation {
-                case .chunk(let chunk):
-                    result += chunk
-                case .info(let info):
-                    print("INFO \(info)")
-                case .toolCall(let call):
-                    // print("TOOL \(call)")
-                    break
-                }
-            }
-        }
-
         Task {
-            
             do {
-                // Handle task completion and cancellation
-                try await withTaskCancellationHandler {
-                    try await generateTask?.value
-                } onCancel: {
-                    Task { @MainActor in
-                        generateTask?.cancel()
-                        
-                        // Mark message as cancelled
-                        if let assistantMessage = messages.last {
-                            assistantMessage.content += "\n[Cancelled]"
-                        }
-                    }
+                
+                var logger = Logger(label: "org.sfomuseum.wall-label")
+
+                if verbose {
+                    logger.logLevel = .debug
                 }
                 
-                print("DONE \(result)")
-                
-                let data = result.data(using: .utf8)
+                var label_parser: Parser
                 
                 do {
-                    let l = try JSONDecoder().decode(WallLabel.self, from: data!)
-                    
-                    print("LABEL \(l)")
+                    label_parser = try NewParser(parser_uri, logger: logger)
                 } catch {
-                    print("FAILED TO LABEL \(error)")
+                    throw error
                 }
                 
-            } catch {
+                let parse_rsp = await label_parser.parse(text: text)
                 
-                DispatchQueue.main.async {
-                    self.progressView.stopAnimating()
-                    self.progressView.isHidden = true
-                }
-                
-                self.showAlert(title: "Failed to parse text", message: "Failed to parse text \(error)")
-            }
-        }
-        
-        /*
-        Task {
-            do {
-                
-                // This doesn't work yet because of concurrency issues
-                // let rsp = await label.Parse()
-                
-                // Start of make this a WallLabel method
-                
-                let session = LanguageModelSession(instructions: instructions)
-                
-                let response = try await session.respond(
-                    to: text,
-                    generating: WallLabel.self
-                )
-                
-                label.title = response.content.title
-                label.date = response.content.date
-                label.creator = response.content.creator
-                label.location = response.content.location
-                label.accession_number = response.content.accession_number
-                label.medium = response.content.medium
-                label.creditline = response.content.creditline
-                
-                // End of make this a WallLabel method
-                
-                DispatchQueue.main.async {
+                switch parse_rsp {
+                case .success(let label_rsp):
                     
-                    self.progressView.stopAnimating()
-                    self.progressView.isHidden = true
-                    self.updateTableData(label: self.label)
+                    label = label_rsp
+
+                    DispatchQueue.main.async {
+                        
+                        self.progressView.stopAnimating()
+                        self.progressView.isHidden = true
+                        self.updateTableData(label: self.label)
+                    }
+                    
+                case .failure(let err):
+                    throw err
                 }
+                                
+                // End of make this a WallLabel method
+
                 
             } catch {
                 DispatchQueue.main.async {
@@ -338,7 +252,7 @@ class ViewController: UIViewController {
             }
             
         }
-         */
+
         
     }
     
