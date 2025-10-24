@@ -12,11 +12,43 @@ import MLXLLM
 import MLXLMCommon
 import MLXVLM
 
+/*
+ 
+ struct WallLabel: Codable {
+     /// The title of the object
+     @Guide(description: "The title or name of the object. Sometimes titles may have leading numbers, followed by a space, indicating acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.")
+     var title: String?
+
+     /// The date attributed to an object, typically when that object was created
+     @Guide(description: "The date attributed to an object, typically when that object was created")
+     var date: String?
+
+     /// The individual or organization responsible for creating an object.
+     @Guide(description: "The individual or organization responsible for creating an object.")
+     var creator: String?
+     
+     /// The name of an individual, persons or organization who donated or are lending an object.
+     @Guide(description: "The name of an individual, persons or organization who donated or are lending an object.")
+     var creditline: String?
+     
+     /// The location that an object was produced in.
+     @Guide(description: "The location that an object was produced in.")
+     var location: String?
+     
+     /// The medium or media used to create the object.
+     @Guide(description: "The medium or media used to create the object.")
+     var medium: String?
+     
+     /// The unique identifier for an object.
+     @Guide(description: "The unique identifier for an object.")
+     var accession_number: String?
+ */
+
 class ViewController: UIViewController {
     
     /// The instructions/guardrails for the LLM prompt
     let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. Generate the result as a JSON-encoded dictionary of key-value pairs.
+        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, credit line and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present. Generate the result as a JSON-encoded dictionary of key-value pairs, storing all values as strings. Assign the object title the key "title". Assign the object date the key "date". Assign the object creator (artist, manufacturer or company) a "creator" key. Assign the object credit line a "creditline" key. Assign the object location a "location" key. Assign the object media a "medium" key. Assign the accession number (primary identifier) an "accession_number" key. Assign an empty "input" key. Ensure that all keys (title, date, creator, creditline, location, medium, accession_number, input) are present and assigned empty string values if they can not be derived from the source text. Do not assign any besides: title, date, creator, creditline, location, medium, accession_number, input.
         """
     
     /// The current WallLabel instance
@@ -188,12 +220,14 @@ class ViewController: UIViewController {
         // https://github.com/ml-explore/mlx-swift-examples/blob/main/Tools/llm-tool/README.md
         
         let mlxService = MLXService()
-        var selectedModel: LMModel = MLXService.availableModels.first!
+        let selectedModel: LMModel = MLXService.availableModels.first!
    
-        var prompt: String = instructions + " The text to parse is: " + text
-        
-        print("PROMPT \(prompt)")
-        print("MODEL \(selectedModel)")
+        let prompt: String = instructions + " The text to parse is: " + text
+        var result: String = ""
+        var generateTask: Task<Void, any Error>?
+
+        // print("PROMPT \(prompt)")
+        // print("MODEL \(selectedModel)")
         
         var messages: [Message] = [
             .system("You are a helpful assistant!")
@@ -202,38 +236,20 @@ class ViewController: UIViewController {
         messages.append(.user(prompt))
         messages.append(.assistant(""))
 
-        // Clear the input after sending
-        // clear(.prompt)
-
-        var generateTask: Task<Void, any Error>?
-   
-        var result: String = ""
-
         generateTask = Task {
-            // Process generation chunks and update UI
-            
-            
-            print("WHITRRRR")
+
+            print("START...")
             
             for await generation in try await mlxService.generate(
                 messages: messages, model: selectedModel)
             {
                 switch generation {
                 case .chunk(let chunk):
-                    // print("CHUNK \(chunk)")
-                    // Append new text to the current assistant message
-                    if let assistantMessage = messages.last {
-                        assistantMessage.content += chunk
-                    }
-                    
                     result += chunk
-                    
                 case .info(let info):
-                    // Update performance metrics
-                    //generateCompletionInfo = info
                     print("INFO \(info)")
                 case .toolCall(let call):
-                    print("TOOL \(call)")
+                    // print("TOOL \(call)")
                     break
                 }
             }
@@ -244,9 +260,7 @@ class ViewController: UIViewController {
             do {
                 // Handle task completion and cancellation
                 try await withTaskCancellationHandler {
-                    print("WOO")
                     try await generateTask?.value
-                    print("POO")
                 } onCancel: {
                     Task { @MainActor in
                         generateTask?.cancel()
@@ -259,6 +273,16 @@ class ViewController: UIViewController {
                 }
                 
                 print("DONE \(result)")
+                
+                let data = result.data(using: .utf8)
+                
+                do {
+                    let l = try JSONDecoder().decode(WallLabel.self, from: data!)
+                    
+                    print("LABEL \(l)")
+                } catch {
+                    print("FAILED TO LABEL \(error)")
+                }
                 
             } catch {
                 
