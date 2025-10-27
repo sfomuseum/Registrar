@@ -155,16 +155,21 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+     
         self.logger = Logger(label: "org.sfomuseum.registar")
-        self.logger.logLevel = .debug
         
         let settings = UserDefaults.standard
         settings.synchronize()
         
-        let p_uri = settings.string(forKey: "WallLabalParserURI")
+        if settings.bool(forKey: "Verbose") == true  {
+            self.logger.logLevel = .debug
+            self.logger.debug("Verbose (debug) logging enabled")
+        }
+
+        let p_uri = settings.string(forKey: "WallLabelParserURI")
         
         if p_uri != nil {
+            self.logger.debug("Assign parser URI from settings \(p_uri!)")
             parser_uri = p_uri!
         }
         
