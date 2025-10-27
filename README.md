@@ -60,8 +60,7 @@ The `WallLabel` package defines the concept of "parsers", each declared by a URI
 
 The default parser for the `Registrar` application is the built-in `FoundationModel` provided by AppleOS 26. If you have an Apple "silicon"  device (one that uses an M1 processor or higher) that is not running AppleOS 26 or has Apple Intelligence displayed you can use third-party models by enabling support for the [MLX](https://github.com/sfomuseum/WallLabel?tab=readme-ov-file#mlx) parser.
 
-This is done in the `Registrar` application's "Settings" panel in the "WallLabel Parser URI" setting.
-
+This is done in the `Registrar` application's "Settings" panel in the "WallLabel Parser URI" setting. For example:
 
 ![](docs/images/registrar-settings.png)
 
