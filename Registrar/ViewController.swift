@@ -5,15 +5,16 @@ import CoreLocation
 import FoundationModels
 import Photos
 
+import Logging
+import WallLabel
+
 class ViewController: UIViewController {
-    
-    /// The instructions/guardrails for the LLM prompt
-    let instructions = """
-        Parse this text as though it were a wall label in a museum describing an object. Wall labels are typically structured as follows: name, date, creator, location, media, creditline and accession number. Usually each property is on a separate line but sometimes, in the case of name and date, they will be combined on the same line. Some properties, like creator, location and media are not always present. Sometimes titles may have leading numbers, followed by a space, acting as a key between the wall label and the surface the object is mounted on. Remove these numbers if present.
-        """
-    
+
+    /// The default parser URI for deriving structured data from label text
+    var parser_uri: String = "foundation://"
+        
     /// The current WallLabel instance
-    var label = WallLabel("")
+    var label: WallLabel?
     
     /// The list of images captured (and stored to collectionView)
     var images = [UIImage](){
@@ -22,6 +23,9 @@ class ViewController: UIViewController {
         }
     }
     
+    /// swift-log instance for logging
+    var logger: Logger!
+
     /// The cell reuse identifier for the image list
     let cellReuseIdentifier = "cell"
     
@@ -67,7 +71,7 @@ class ViewController: UIViewController {
         self.progressView.startAnimating()
         self.progressView.isHidden = false
         
-        let rsp = self.label.marshalJSON()
+        let rsp = self.label?.marshalJSON()
         var meta: String
         
         switch (rsp) {
@@ -85,6 +89,12 @@ class ViewController: UIViewController {
             }
             
             meta = str_data
+        default:
+            self.progressView.stopAnimating()
+            self.progressView.isHidden = true
+            
+            self.showAlert(title: "Failed to export metadata", message: "Unable to marshal metadata to export")
+            return
         }
         
         for im in images {
@@ -146,6 +156,30 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+     
+        // Set up logging
+        
+        self.logger = Logger(label: "org.sfomuseum.registar")
+        
+        // Read custom settings
+        // Note: The registerSettingsBundle() method is called in AppDelegate.swift
+        
+        let settings = UserDefaults.standard
+        settings.synchronize()
+        
+        if settings.bool(forKey: "Verbose") == true  {
+            self.logger.logLevel = .debug
+            self.logger.debug("Verbose (debug) logging enabled")
+        }
+
+        let p_uri = settings.string(forKey: "WallLabelParserURI")
+        
+        if p_uri != nil {
+            self.logger.debug("Assign parser URI from settings \(p_uri!)")
+            parser_uri = p_uri!
+        }
+        
+        // Set up geolocation stuff
         
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
@@ -153,11 +187,15 @@ class ViewController: UIViewController {
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         
+        // Set up table view stuff
+        
         tableView.register(KeyValueTableViewCell.self, forCellReuseIdentifier: "KeyValueCell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.layer.borderWidth = 1.0
         tableView.layer.borderColor = UIColor.black.cgColor
+        
+        // Toggle UI elements
         
         self.collectionView.dataSource = self
         self.progressView.isHidden = true
@@ -170,42 +208,39 @@ class ViewController: UIViewController {
         
         self.progressView.isHidden = false
         self.progressView.startAnimating()
-        
-        label = WallLabel(text)
-        label.timestamp = Int(NSDate().timeIntervalSince1970)
-        label.latitude = self.current_location?.coordinate.latitude ?? 0.0
-        label.longitude = self.current_location?.coordinate.longitude ?? 0.0
+         
+        self.logger.debug("Process text '\(text)'")
         
         Task {
             do {
                 
-                // This doesn't work yet because of concurrency issues
-                // let rsp = await label.Parse()
+                var label_parser: Parser
                 
-                // Start of make this a WallLabel method
+                do {
+                    label_parser = try NewParser(self.parser_uri, logger: self.logger)
+                } catch {
+                    logger.error("Failed to create new parser for \(self.parser_uri), \(error)")
+                    throw error
+                }
                 
-                let session = LanguageModelSession(instructions: instructions)
+                let parse_rsp = await label_parser.parse(text: text)
                 
-                let response = try await session.respond(
-                    to: text,
-                    generating: WallLabel.self
-                )
-                
-                label.title = response.content.title
-                label.date = response.content.date
-                label.creator = response.content.creator
-                label.location = response.content.location
-                label.accession_number = response.content.accession_number
-                label.medium = response.content.medium
-                label.creditline = response.content.creditline
-                
-                // End of make this a WallLabel method
-                
-                DispatchQueue.main.async {
+                switch parse_rsp {
+                case .success(let label_rsp):
                     
-                    self.progressView.stopAnimating()
-                    self.progressView.isHidden = true
-                    self.updateTableData(label: self.label)
+                    logger.debug("Successfully parsed label text")
+                    label = label_rsp
+
+                    DispatchQueue.main.async {
+                        
+                        self.progressView.stopAnimating()
+                        self.progressView.isHidden = true
+                        self.updateTableData(label: self.label!)
+                    }
+                    
+                case .failure(let error):
+                    logger.error("Failed to parse label, \(error)")
+                    throw error
                 }
                 
             } catch {
@@ -218,6 +253,8 @@ class ViewController: UIViewController {
             }
             
         }
+
+        
     }
     
     //MARK: Image saving

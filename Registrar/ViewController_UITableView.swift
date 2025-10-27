@@ -1,4 +1,5 @@
 import UIKit
+import WallLabel
 
 extension ViewController: UITableViewDataSource, UITableViewDelegate {
     
@@ -31,14 +32,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
             cell.addInteraction(interaction)
         }
         
-        /*
-        if indexPath.row+1 == keyValuePairs.count{
-            print("DONE")
-            let ex = self.exportTable()
-            print("EX \(ex)")
-        }
-        */
-        
         return cell
     }
     
@@ -52,7 +45,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         var newKeyValuePairs: [(String, String)] = []
         
-        for key in label.displayKeys() {
+        for key in displayKeys() {
             
             if !dict.keys.contains(key){
                 continue
@@ -114,6 +107,18 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
+    func propertiesToDictionary<T>(instance: T) -> [String: Any] {
+        var dictionary = [String: Any]()
+        let mirror = Mirror(reflecting: instance)
+        for child in mirror.children {
+            if let name = child.label {
+                dictionary[name] = child.value
+            }
+        }
+        return dictionary
+    }
+    
+    /*
     func propertiesToDictionary<T: Codable>(instance: T) -> [String: Any] {
         var dictionary = [String: Any]()
         
@@ -126,4 +131,5 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         
         return dictionary
     }
+     */
 }
