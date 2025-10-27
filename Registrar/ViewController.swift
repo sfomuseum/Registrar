@@ -10,7 +10,7 @@ import WallLabel
 
 class ViewController: UIViewController {
 
-    // mlx://?model=llama3.2:1b
+    /// The default parser URI for deriving structured data from label text
     var parser_uri: String = "foundation://"
         
     /// The current WallLabel instance
@@ -23,6 +23,7 @@ class ViewController: UIViewController {
         }
     }
     
+    /// swift-log instance for logging
     var logger: Logger!
 
     /// The cell reuse identifier for the image list
@@ -156,7 +157,12 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
      
+        // Set up logging
+        
         self.logger = Logger(label: "org.sfomuseum.registar")
+        
+        // Read custom settings
+        // Note: The registerSettingsBundle() method is called in AppDelegate.swift
         
         let settings = UserDefaults.standard
         settings.synchronize()
@@ -173,17 +179,23 @@ class ViewController: UIViewController {
             parser_uri = p_uri!
         }
         
+        // Set up geolocation stuff
+        
         locationManager.requestAlwaysAuthorization()
         locationManager.distanceFilter = kCLDistanceFilterNone
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.startUpdatingLocation()
         locationManager.delegate = self
         
+        // Set up table view stuff
+        
         tableView.register(KeyValueTableViewCell.self, forCellReuseIdentifier: "KeyValueCell")
         tableView.dataSource = self
         tableView.delegate = self
         tableView.layer.borderWidth = 1.0
         tableView.layer.borderColor = UIColor.black.cgColor
+        
+        // Toggle UI elements
         
         self.collectionView.dataSource = self
         self.progressView.isHidden = true
@@ -207,7 +219,7 @@ class ViewController: UIViewController {
                 do {
                     label_parser = try NewParser(self.parser_uri, logger: self.logger)
                 } catch {
-                    logger.error("Failed to create new parser, \(error)")
+                    logger.error("Failed to create new parser for \(self.parser_uri), \(error)")
                     throw error
                 }
                 
