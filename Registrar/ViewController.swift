@@ -217,7 +217,7 @@ class ViewController: UIViewController {
                 var label_parser: Parser
                 
                 do {
-                    label_parser = try NewParser(self.parser_uri, logger: self.logger)
+                    label_parser = try await NewParser(self.parser_uri, logger: self.logger)
                 } catch {
                     logger.error("Failed to create new parser for \(self.parser_uri), \(error)")
                     throw error
