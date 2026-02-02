@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4A3D0E162EAC32B50015ADCC /* WallLabel in Frameworks */ = {isa = PBXBuildFile; productRef = 4A3D0E152EAC32B50015ADCC /* WallLabel */; };
-		4A3D0E192EAC33780015ADCC /* WallLabel in Frameworks */ = {isa = PBXBuildFile; productRef = 4A3D0E182EAC33780015ADCC /* WallLabel */; };
 		4A3D0E1C2EAC34900015ADCC /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 4A3D0E1B2EAC34900015ADCC /* Logging */; };
 /* End PBXBuildFile section */
 
@@ -73,7 +72,6 @@
 			files = (
 				4A3D0E1C2EAC34900015ADCC /* Logging in Frameworks */,
 				4A3D0E162EAC32B50015ADCC /* WallLabel in Frameworks */,
-				4A3D0E192EAC33780015ADCC /* WallLabel in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,7 +133,6 @@
 			name = Registrar;
 			packageProductDependencies = (
 				4A3D0E152EAC32B50015ADCC /* WallLabel */,
-				4A3D0E182EAC33780015ADCC /* WallLabel */,
 				4A3D0E1B2EAC34900015ADCC /* Logging */,
 			);
 			productName = Registrar;
@@ -221,8 +218,8 @@
 			mainGroup = 4A5DF12F2E4E6D90009976D6;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				4A3D0E172EAC33780015ADCC /* XCRemoteSwiftPackageReference "WallLabel" */,
 				4A3D0E1A2EAC34900015ADCC /* XCRemoteSwiftPackageReference "swift-log" */,
+				4A520D792F3081DF0044B63C /* XCRemoteSwiftPackageReference "Docent" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4A5DF1392E4E6D90009976D6 /* Products */;
@@ -623,20 +620,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		4A3D0E172EAC33780015ADCC /* XCRemoteSwiftPackageReference "WallLabel" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/sfomuseum/WallLabel";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		4A3D0E1A2EAC34900015ADCC /* XCRemoteSwiftPackageReference "swift-log" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/apple/swift-log";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.6.4;
+				minimumVersion = 1.9.1;
+			};
+		};
+		4A520D792F3081DF0044B63C /* XCRemoteSwiftPackageReference "Docent" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sfomuseum/Docent";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -644,11 +641,6 @@
 /* Begin XCSwiftPackageProductDependency section */
 		4A3D0E152EAC32B50015ADCC /* WallLabel */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = WallLabel;
-		};
-		4A3D0E182EAC33780015ADCC /* WallLabel */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 4A3D0E172EAC33780015ADCC /* XCRemoteSwiftPackageReference "WallLabel" */;
 			productName = WallLabel;
 		};
 		4A3D0E1B2EAC34900015ADCC /* Logging */ = {

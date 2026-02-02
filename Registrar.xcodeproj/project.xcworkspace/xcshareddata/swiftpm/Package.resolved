@@ -1,13 +1,13 @@
 {
-  "originHash" : "f47936bd97123e2ac3886e25bf78097256702c42738233b6346fdf19582741b8",
+  "originHash" : "8bf7ae0916d955cdd8e1d620f7bf03fc0fa80678450ac87a168203d42eb8997f",
   "pins" : [
     {
-      "identity" : "gzipswift",
+      "identity" : "docent",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/1024jp/GzipSwift",
+      "location" : "https://github.com/sfomuseum/Docent",
       "state" : {
-        "revision" : "731037f6cc2be2ec01562f6597c1d0aa3fe6fd05",
-        "version" : "6.0.1"
+        "branch" : "main",
+        "revision" : "f7504ad59a3ba53480216b8a27445d05ea317b56"
       }
     },
     {
@@ -15,17 +15,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/ml-explore/mlx-swift",
       "state" : {
-        "revision" : "072b684acaae80b6a463abab3a103732f33774bf",
-        "version" : "0.29.1"
+        "revision" : "4dccaeda1d83cf8697f235d2786c2d72ad4bb925",
+        "version" : "0.30.3"
       }
     },
     {
-      "identity" : "mlx-swift-examples",
+      "identity" : "mlx-swift-lm",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ml-explore/mlx-swift-examples",
+      "location" : "https://github.com/ml-explore/mlx-swift-lm/",
       "state" : {
         "branch" : "main",
-        "revision" : "3d432f5e98ed79ec984cf8ebe6690ad9584518df"
+        "revision" : "2c700546340c37f275d23302163701b77c4dcbd9"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log",
       "state" : {
-        "revision" : "ce592ae52f982c847a4efc0dd881cc9eb32d29f2",
-        "version" : "1.6.4"
+        "revision" : "2778fd4e5a12a8aaa30a3ee8285f4ce54c5f3181",
+        "version" : "1.9.1"
       }
     },
     {
@@ -69,17 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/huggingface/swift-transformers",
       "state" : {
-        "revision" : "94610577e4af9bbc267060af1e25e977604dd796",
-        "version" : "1.1.1"
-      }
-    },
-    {
-      "identity" : "walllabel",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sfomuseum/WallLabel",
-      "state" : {
-        "branch" : "main",
-        "revision" : "eae1ca51f4e10231849966bce7982be99a70ad1b"
+        "revision" : "573e5c9036c2f136b3a8a071da8e8907322403d0",
+        "version" : "1.1.6"
       }
     }
   ],
